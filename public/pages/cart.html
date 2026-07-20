@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <script>(function () { var t = localStorage.getItem("onexp_theme") || (window.matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light"); document.documentElement.setAttribute("data-theme", t); })()</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <title>Cart – OneXpShop</title>
+  <link rel="icon" href="/uploads/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/design-system.css">
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+
+    <!-- Left: Logo -->
+    <a href="/" class="logo">
+      <span class="logo-icon">
+        <img src="/uploads/favicon.png" alt="OneXpShop logo">
+      </span>
+      OneXp<span class="logo-accent">Shop</span>
+    </a>
+
+    <!-- Right: actions -->
+    <div class="header-actions">
+      <button id="theme-toggle" class="theme-toggle" data-action="toggle-theme" aria-label="Toggle dark mode">
+        <i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i>
+      </button>
+      <a href="/cart" class="cart-btn">
+        <i class="fa-solid fa-bag-shopping"></i> Cart
+        <span class="cart-badge">0</span>
+      </a>
+      <button class="mobile-menu-btn" id="mobile-menu-btn"
+        data-action="toggle-nav" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Nav (collapses on mobile) -->
+    <nav class="site-nav" id="site-nav">
+      <a href="/shop"><i class="fa-solid fa-store"></i> Shop</a>
+      <a href="/my-account"><i class="fa-solid fa-user"></i> Account</a>
+    </nav>
+
+  </div>
+</header>
+
+  <div class="container" style="padding-top:var(--space-6);padding-bottom:var(--space-10)">
+    <nav class="breadcrumb">
+      <a href="/"><i class="fa-solid fa-house"></i></a>
+      <span class="breadcrumb-sep"><i class="fa-solid fa-chevron-right" style="font-size:.6rem"></i></span>
+      <span class="breadcrumb-current">Shopping Cart</span>
+    </nav>
+
+    <div class="page-header" style="padding-top:var(--space-2)">
+      <h1 style="font-size:var(--font-size-3xl);font-weight:var(--font-weight-extrabold);letter-spacing:-.02em">
+        <i class="fa-solid fa-bag-shopping" style="color:var(--primary);margin-right:.5rem"></i>Shopping Cart
+      </h1>
+    </div>
+
+    <!-- Empty state -->
+    <div id="empty-cart" class="empty-state" style="display:none">
+      <div class="empty-icon"><i class="fa-solid fa-bag-shopping"></i></div>
+      <h3>Your cart is empty</h3>
+      <p>Add some products to get started!</p>
+      <a href="/shop" class="btn btn-primary" style="margin-top:var(--space-4)"><i class="fa-solid fa-store"></i> Browse
+        Shop</a>
+    </div>
+
+    <!-- Cart content -->
+    <div id="cart-content" class="cart-layout">
+      <div>
+        <div id="cart-items" class="card"></div>
+        <div style="margin-top:var(--space-3)">
+          <a href="/shop" class="btn btn-secondary btn-sm"><i class="fa-solid fa-arrow-left"></i> Continue Shopping</a>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div>
+        <div class="card card-body" style="position:sticky;top:calc(var(--header-height) + 1rem)">
+          <h2
+            style="font-family:var(--font-display);font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);margin-bottom:var(--space-4)">
+            Order Summary
+          </h2>
+          <div class="summary-row"><span>Subtotal</span><span id="subtotal-val">₦0.00</span></div>
+          <div class="summary-row">
+            <span>Shipping</span>
+            <span style="color:var(--success);font-weight:var(--font-weight-semibold)"><i
+                class="fa-solid fa-truck-fast"></i> Free</span>
+          </div>
+          <div class="summary-row"><span>Tax</span><span>₦0.00</span></div>
+          <div class="summary-total">
+            <span>Total</span>
+            <span id="total-val">₦0.00</span>
+          </div>
+          <a href="/checkout" class="btn btn-primary btn-full btn-lg" style="margin-top:var(--space-5)">
+            <i class="fa-solid fa-lock"></i> Proceed to Checkout
+          </a>
+          <div
+            style="display:flex;align-items:center;justify-content:center;gap:.4rem;margin-top:var(--space-3);font-size:var(--font-size-xs);color:var(--text-muted)">
+            <i class="fa-solid fa-shield-halved"></i> Secure, encrypted checkout
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-bottom">
+          <p class="footer-copy">© <span id="footer-year"></span> OneXpShop · OneXportal Enterprise</p>
+          <p class="footer-copy" style="opacity:.6">Built by Amos Isaiah Tizhe</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    document.getElementById("footer-year").textContent = new Date().getFullYear();
+
+    function renderCart() {
+      const items = cart.get();
+      const emptyEl = document.getElementById("empty-cart");
+      const contentEl = document.getElementById("cart-content");
+
+      if (!items.length) {
+        emptyEl.style.display = "flex";
+        contentEl.style.display = "none";
+        return;
+      }
+      emptyEl.style.display = "none";
+      contentEl.style.display = "grid";
+
+      document.getElementById("cart-items").innerHTML = items.map(item => `
+    <div class="cart-item">
+      <div class="cart-item__image">
+        ${item.imageUrl
+          ? `<img src="${safeUrl(item.imageUrl)}" alt="${safe(item.productName)}" loading="lazy">`
+          : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--neutral-400)"><i class="fa-solid fa-image"></i></div>`}
+      </div>
+      <div class="cart-item__info">
+        <div class="cart-item__name">${safe(item.productName)}</div>
+        <div class="cart-item__price">${formatPrice(item.price)} each</div>
+        <div class="cart-item__actions">
+          <div class="qty-control">
+            <button data-action="cart-dec" data-val="${item.productId}" aria-label="Decrease">
+              <i class="fa-solid fa-minus" style="font-size:.7rem"></i>
+            </button>
+            <input type="number" value="${item.quantity}" min="1" max="99"
+              data-action-change="cart-set" data-val="${item.productId}"
+              aria-label="Quantity" style="width:44px">
+            <button data-action="cart-inc" data-val="${item.productId}" aria-label="Increase">
+              <i class="fa-solid fa-plus" style="font-size:.7rem"></i>
+            </button>
+          </div>
+          <button class="btn btn-danger btn-sm" data-action="cart-remove-toast" data-val="${item.productId}">
+            <i class="fa-solid fa-trash-can"></i> Remove
+          </button>
+        </div>
+      </div>
+      <div class="cart-item__total">${formatPrice(parseFloat(item.price) * item.quantity)}</div>
+    </div>
+  `).join("");
+
+      const total = cart.total();
+      document.getElementById("subtotal-val").textContent = formatPrice(total);
+      document.getElementById("total-val").textContent = formatPrice(total);
+    }
+
+    registerActions({
+      "cart-set": (val, el) => { cart.updateQty(+el.dataset.val, parseInt(el.value)); renderCart(); },
+      "cart-inc": () => renderCart(), // re-render after global handler runs (we re-bind below)
+      "cart-dec": () => renderCart(),
+      "cart-remove-toast": (val) => { cart.remove(+val); renderCart(); toast.info("Item removed from cart"); },
+    });
+
+    // The global cart-inc / cart-dec actions in app.js handle storage; we just need to re-render.
+    document.addEventListener("click", e => {
+      if (e.target.closest('[data-action="cart-inc"],[data-action="cart-dec"]')) {
+        queueMicrotask(renderCart);
+      }
+    });
+
+    renderCart();
+  </script>
+</body>
+
+</html>

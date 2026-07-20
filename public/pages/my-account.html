@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <script>(function () { var t = localStorage.getItem("onexp_theme") || (window.matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light"); document.documentElement.setAttribute("data-theme", t); })()</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <title>My Account – OneXpShop</title>
+  <link rel="icon" href="/uploads/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/design-system.css">
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+
+    <!-- Left: Logo -->
+    <a href="/" class="logo">
+      <span class="logo-icon">
+        <img src="/uploads/favicon.png" alt="OneXpShop logo">
+      </span>
+      OneXp<span class="logo-accent">Shop</span>
+    </a>
+
+    <!-- Right: actions -->
+    <div class="header-actions">
+      <button id="theme-toggle" class="theme-toggle" data-action="toggle-theme" aria-label="Toggle dark mode">
+        <i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i>
+      </button>
+      <a href="/cart" class="cart-btn">
+        <i class="fa-solid fa-bag-shopping"></i> Cart
+        <span class="cart-badge">0</span>
+      </a>
+      <button class="mobile-menu-btn" id="mobile-menu-btn"
+        data-action="toggle-nav" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Nav (collapses on mobile) -->
+    <nav class="site-nav" id="site-nav">
+      <a href="/shop"><i class="fa-solid fa-store"></i> Shop</a>
+      <a href="/my-account"><i class="fa-solid fa-user"></i> Account</a>
+    </nav>
+
+  </div>
+</header>
+
+  <div class="container" style="padding:var(--space-6) 0 var(--space-10);max-width:860px">
+
+    <!-- Guest state -->
+    <div id="guest-state" class="empty-state" style="display:none">
+      <div class="empty-icon"><i class="fa-solid fa-user-lock"></i></div>
+      <h3>You're not signed in</h3>
+      <p>Sign in to view your orders and account details.</p>
+      <a href="/login" class="btn btn-primary" style="margin-top:var(--space-4)"><i
+          class="fa-solid fa-right-to-bracket"></i> Sign In</a>
+    </div>
+
+    <!-- Logged-in state -->
+    <div id="user-state" style="display:none">
+      <!-- Header -->
+      <div
+        style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--space-6);flex-wrap:wrap;gap:var(--space-4)">
+        <div style="display:flex;align-items:center;gap:var(--space-4)">
+          <div
+            style="width:56px;height:56px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#fff;font-family:var(--font-display);font-weight:700"
+            id="user-avatar">A</div>
+          <div>
+            <h1 style="font-size:var(--font-size-2xl);font-weight:var(--font-weight-extrabold);letter-spacing:-.02em">My
+              Account</h1>
+            <p id="user-greeting" class="text-muted" style="margin-top:.2rem;font-size:var(--font-size-sm)"></p>
+          </div>
+        </div>
+        <button class="btn btn-secondary" data-action="logout"><i class="fa-solid fa-right-from-bracket"></i> Sign
+          Out</button>
+      </div>
+
+      <!-- Admin card -->
+      <div id="admin-link-card" style="display:none;margin-bottom:var(--space-5)">
+        <div class="card card-body"
+          style="background:linear-gradient(135deg,var(--brand-800),var(--brand-600));color:#fff;border-color:var(--brand-700)">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+            <div>
+              <h3 style="color:#fff;font-size:var(--font-size-lg);margin-bottom:.3rem"><i
+                  class="fa-solid fa-shield-halved"></i> Admin Panel</h3>
+              <p style="color:rgba(255,255,255,.7);font-size:var(--font-size-sm)">Manage products, orders, and site
+                settings.</p>
+            </div>
+            <a href="/admin" class="btn" style="background:#fff;color:var(--brand-700);font-weight:700">
+              <i class="fa-solid fa-arrow-right"></i> Go to Admin
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders -->
+      <div class="card">
+        <div class="card-header">
+          <h2 style="font-size:var(--font-size-lg)"><i class="fa-solid fa-receipt"
+              style="color:var(--primary);margin-right:.4rem"></i>My Orders</h2>
+        </div>
+        <div id="orders-list" class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading orders…</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-bottom">
+          <p class="footer-copy">© <span id="footer-year"></span> OneXpShop · OneXportal Enterprise</p>
+          <p class="footer-copy" style="opacity:.6">Built by Amos Isaiah Tizhe</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    document.getElementById("footer-year").textContent = new Date().getFullYear();
+
+    loadCurrentUser().then(user => {
+      if (!user) {
+        document.getElementById("guest-state").style.display = "flex";
+        return;
+      }
+      document.getElementById("user-state").style.display = "block";
+      const initials = (user.name || user.email || "U").charAt(0).toUpperCase();
+      document.getElementById("user-avatar").textContent = initials;
+      document.getElementById("user-greeting").innerHTML = `<i class="fa-solid fa-envelope"></i> ${safe(user.email)}`;
+      if (user.role === "admin") document.getElementById("admin-link-card").style.display = "";
+
+      api.get("/api/orders").then(orders => {
+        const el = document.getElementById("orders-list");
+        if (!orders.length) {
+          el.innerHTML = `<div class="empty-state" style="padding:var(--space-8)">
+        <div class="empty-icon"><i class="fa-solid fa-box-open"></i></div>
+        <h3>No orders yet</h3>
+        <p>Start shopping to see your orders here.</p>
+        <a href="/shop" class="btn btn-primary" style="margin-top:var(--space-4)"><i class="fa-solid fa-store"></i> Browse Shop</a>
+      </div>`;
+          return;
+        }
+        el.className = "";
+        el.innerHTML = `<div class="table-wrap"><table>
+      <thead><tr><th>Order #</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th></tr></thead>
+      <tbody>${orders.map(o => `
+        <tr>
+          <td style="font-weight:600;color:var(--primary)">#${safe(o.order_number || String(o.id))}</td>
+          <td>${formatDate(o.created_at)}</td>
+          <td>${safe(String(o.items ? JSON.parse(o.items).length : "—"))} item(s)</td>
+          <td style="font-weight:600">${formatPrice(o.total_amount)}</td>
+          <td><span class="badge badge-${safe(o.status)}">${safe(o.status)}</span></td>
+        </tr>`).join("")}
+      </tbody>
+    </table></div>`;
+      }).catch(() => {
+        document.getElementById("orders-list").innerHTML = `<p class="text-muted" style="padding:var(--space-5)">Could not load orders.</p>`;
+      });
+    });
+  </script>
+</body>
+
+</html>

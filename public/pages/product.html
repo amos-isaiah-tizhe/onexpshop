@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <script>(function () { var t = localStorage.getItem("onexp_theme") || (window.matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light"); document.documentElement.setAttribute("data-theme", t); })()</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <title>Product – OneXpShop</title>
+  <link rel="icon" href="/uploads/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/design-system.css">
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+
+    <!-- Left: Logo -->
+    <a href="/" class="logo">
+      <span class="logo-icon">
+        <img src="/uploads/favicon.png" alt="OneXpShop logo">
+      </span>
+      OneXp<span class="logo-accent">Shop</span>
+    </a>
+
+    <!-- Right: actions -->
+    <div class="header-actions">
+      <button id="theme-toggle" class="theme-toggle" data-action="toggle-theme" aria-label="Toggle dark mode">
+        <i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i>
+      </button>
+      <a href="/cart" class="cart-btn">
+        <i class="fa-solid fa-bag-shopping"></i> Cart
+        <span class="cart-badge">0</span>
+      </a>
+      <button class="mobile-menu-btn" id="mobile-menu-btn"
+        data-action="toggle-nav" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Nav (collapses on mobile) -->
+    <nav class="site-nav" id="site-nav">
+      <a href="/shop"><i class="fa-solid fa-store"></i> Shop</a>
+      <a href="/my-account"><i class="fa-solid fa-user"></i> Account</a>
+    </nav>
+
+  </div>
+</header>
+
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/"><i class="fa-solid fa-house"></i></a>
+      <span class="breadcrumb-sep"><i class="fa-solid fa-chevron-right" style="font-size:.6rem"></i></span>
+      <a href="/shop">Shop</a>
+      <span class="breadcrumb-sep"><i class="fa-solid fa-chevron-right" style="font-size:.6rem"></i></span>
+      <span class="breadcrumb-current" id="bc-name">Product</span>
+    </nav>
+
+    <div id="loading-state" class="loading-state">
+      <div class="spinner spinner-lg"></div>
+      <p>Loading product…</p>
+    </div>
+
+    <div id="error-state" class="empty-state" style="display:none">
+      <div class="empty-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <h3>Product not found</h3>
+      <p>This product doesn't exist or was removed.</p>
+      <a href="/shop" class="btn btn-primary" style="margin-top:var(--space-4)"><i class="fa-solid fa-arrow-left"></i>
+        Back to Shop</a>
+    </div>
+
+    <div id="product-detail" class="product-detail" style="display:none">
+      <!-- Gallery -->
+      <div>
+        <div style="position:relative">
+          <img id="main-image" class="gallery-main" src="" alt="" loading="lazy">
+          <span id="stock-badge" style="display:none;position:absolute;top:1rem;left:1rem"
+            class="product-card__badge badge-out">Out of Stock</span>
+        </div>
+        <div id="thumb-strip" class="gallery-thumbs"></div>
+      </div>
+
+      <!-- Info -->
+      <div class="product-info" style="display:flex;flex-direction:column;gap:var(--space-4)">
+        <p id="product-category" class="product-info__category"></p>
+        <h1 id="product-name" class="product-info__name"></h1>
+        <div id="product-price" class="product-info__price"></div>
+        <p id="product-stock" class="stock-ok"></p>
+        <p id="product-desc" class="product-info__desc"></p>
+
+        <div
+          style="background:var(--surface-secondary);border-radius:var(--radius-lg);padding:var(--space-4);display:flex;flex-direction:column;gap:var(--space-3)">
+          <div
+            style="display:flex;align-items:center;gap:var(--space-3);font-size:var(--font-size-sm);color:var(--text-secondary)">
+            <i class="fa-solid fa-truck-fast" style="color:var(--success);width:16px"></i> Free shipping on this order
+          </div>
+          <div
+            style="display:flex;align-items:center;gap:var(--space-3);font-size:var(--font-size-sm);color:var(--text-secondary)">
+            <i class="fa-solid fa-rotate-left" style="color:var(--info);width:16px"></i> 30-day return policy
+          </div>
+          <div
+            style="display:flex;align-items:center;gap:var(--space-3);font-size:var(--font-size-sm);color:var(--text-secondary)">
+            <i class="fa-solid fa-shield-halved" style="color:var(--primary);width:16px"></i> Secure, encrypted checkout
+          </div>
+        </div>
+
+        <div class="atc-row">
+          <div class="qty-selector" aria-label="Quantity selector">
+            <button class="qty-btn" id="qty-minus" aria-label="Decrease quantity"><i
+                class="fa-solid fa-minus"></i></button>
+            <input id="qty-input" class="qty-input" type="number" value="1" min="1" max="99" aria-label="Quantity">
+            <button class="qty-btn" id="qty-plus" aria-label="Increase quantity"><i
+                class="fa-solid fa-plus"></i></button>
+          </div>
+          <button id="add-btn" class="btn btn-primary btn-lg" id="add-to-cart-btn" style="flex:1">
+            <i class="fa-solid fa-cart-plus"></i> Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer" style="margin-top:var(--space-10)">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-bottom">
+          <p class="footer-copy">© <span id="footer-year"></span> OneXpShop · OneXportal Enterprise</p>
+          <p class="footer-copy" style="opacity:.6">Built by Amos Isaiah Tizhe</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    document.getElementById("footer-year").textContent = new Date().getFullYear();
+    let product = null;
+    const productId = parseInt(window.location.pathname.split("/").pop());
+
+    if (!productId || isNaN(productId)) {
+      showError();
+    } else {
+      api.get(`/api/products/${productId}`)
+        .then(p => { product = p; renderProduct(p); })
+        .catch(() => showError());
+    }
+
+    function showError() {
+      document.getElementById("loading-state").style.display = "none";
+      document.getElementById("error-state").style.display = "flex";
+    }
+
+    function renderProduct(p) {
+      document.getElementById("loading-state").style.display = "none";
+      document.getElementById("product-detail").style.display = "grid";
+      document.getElementById("bc-name").textContent = p.name;
+      document.title = `${p.name} – OneXpShop`;
+
+      document.getElementById("product-name").textContent = p.name;
+      document.getElementById("product-price").textContent = formatPrice(p.price);
+      document.getElementById("product-desc").textContent = p.description || "";
+
+      if (p.category_name) {
+        document.getElementById("product-category").innerHTML = `<i class="fa-solid fa-tag" style="margin-right:.3rem"></i>${safe(p.category_name)}`;
+      }
+
+      const stockEl = document.getElementById("product-stock");
+      const addBtn = document.getElementById("add-btn");
+      if (p.stock > 0) {
+        stockEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> In stock — ${safe(String(p.stock))} available`;
+        stockEl.className = "stock-ok";
+      } else {
+        stockEl.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Out of stock`;
+        stockEl.className = "stock-out";
+        addBtn.disabled = true;
+        addBtn.innerHTML = `<i class="fa-solid fa-ban"></i> Out of Stock`;
+        document.getElementById("stock-badge").style.display = "";
+      }
+
+      const images = p.imageUrls || [];
+      const mainImg = document.getElementById("main-image");
+      if (images.length > 0) {
+        mainImg.src = safeUrl(images[0]);
+        mainImg.alt = p.name;
+      } else {
+        mainImg.style.cssText = "background:var(--surface-secondary);display:flex;align-items:center;justify-content:center;min-height:300px";
+        mainImg.outerHTML = `<div style="background:var(--surface-secondary);border-radius:var(--radius-xl);aspect-ratio:1;display:flex;align-items:center;justify-content:center"><i class="fa-solid fa-image" style="font-size:4rem;color:var(--neutral-400)"></i></div>`;
+      }
+
+      const thumbStrip = document.getElementById("thumb-strip");
+      if (images.length > 1) {
+        thumbStrip.innerHTML = images.map((url, i) => `
+      <img src="${safeUrl(url)}" class="gallery-thumb ${i === 0 ? "active" : ""}"
+           alt="Image ${i + 1}" loading="lazy"
+           data-action="switch-image" data-val="${safeUrl(url)}">`
+        ).join("");
+      }
+    }
+
+    registerActions({
+      "switch-image": (url, el) => {
+        document.getElementById("main-image").src = url;
+        document.querySelectorAll(".gallery-thumb").forEach(t => t.classList.remove("active"));
+        el.classList.add("active");
+      },
+    });
+
+    function changeQty(delta) {
+      const input = document.getElementById("qty-input");
+      input.value = Math.max(1, parseInt(input.value || 1) + delta);
+    }
+
+    function addToCart() {
+      if (!product) return;
+      const qty = parseInt(document.getElementById("qty-input").value) || 1;
+      cart.add(product, qty);
+    }
+  </script>
+  <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+      var minus = document.getElementById("qty-minus");
+      var plus = document.getElementById("qty-plus");
+      var atcBtn = document.getElementById("add-to-cart-btn");
+      if (minus) minus.addEventListener("click", function () { changeQty(-1); });
+      if (plus) plus.addEventListener("click", function () { changeQty(1); });
+      if (atcBtn) atcBtn.addEventListener("click", addToCart);
+    });
+
+  </script>
+</body>
+
+</html>

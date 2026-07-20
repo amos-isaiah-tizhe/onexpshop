@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <script>(function () { var t = localStorage.getItem("onexp_theme") || (window.matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light"); document.documentElement.setAttribute("data-theme", t); })()</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <title>Sign In – OneXpShop</title>
+  <link rel="icon" href="/uploads/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/design-system.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: var(--space-4)
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(135deg, var(--brand-950) 0%, var(--brand-800) 60%, var(--brand-600) 100%)
+    }
+  </style>
+</head>
+
+<body>
+
+  <div style="width:100%;max-width:420px">
+    <div style="text-align:center;margin-bottom:var(--space-6)">
+      <a href="/"
+        style="font-family:var(--font-display);font-size:var(--font-size-2xl);font-weight:800;color:#fff;text-decoration:none;letter-spacing:-.02em">OneXpShop</a>
+      <p style="color:rgba(255,255,255,.55);margin-top:.4rem;font-size:var(--font-size-sm)">Sign in to your account</p>
+    </div>
+
+    <div class="card">
+      <div class="card-body" style="padding:var(--space-7)">
+        <h1
+          style="font-size:var(--font-size-xl);font-weight:700;margin-bottom:var(--space-5);display:flex;align-items:center;gap:.5rem">
+          <i class="fa-solid fa-right-to-bracket" style="color:var(--primary)"></i> Sign In
+        </h1>
+
+        <div class="form-group">
+          <label for="email"><i class="fa-solid fa-envelope"></i> Email Address</label>
+          <input id="email" type="email" class="form-control" placeholder="you@example.com" autocomplete="email"
+            required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">
+            <i class="fa-solid fa-lock"></i> Password
+            <button type="button" id="show-pass-btn"
+              style="float:right;background:none;border:none;color:var(--primary);font-size:var(--font-size-xs);cursor:pointer;font-family:var(--font-body);padding:0">
+              Show
+            </button>
+          </label>
+          <input id="password" type="password" class="form-control" placeholder="••••••••"
+            autocomplete="current-password" required>
+        </div>
+
+        <!-- Error box — hidden by default, only shown on actual login errors -->
+        <div id="error-msg"
+          style="display:none;background:#fff1f0;color:var(--error);padding:var(--space-3) var(--space-4);border-radius:var(--radius-md);font-size:var(--font-size-sm);margin-bottom:var(--space-4);border:1px solid #fecaca">
+          <i class="fa-solid fa-triangle-exclamation"></i> <span id="error-text"></span>
+        </div>
+
+        <button id="login-btn" class="btn btn-primary btn-full btn-lg" style="margin-top:var(--space-2)">
+          <i class="fa-solid fa-right-to-bracket"></i> Sign In
+        </button>
+
+        <div style="text-align:center;margin-top:var(--space-5)">
+          <a href="/" style="font-size:var(--font-size-sm);color:var(--text-muted)">
+            <i class="fa-solid fa-arrow-left"></i> Back to store
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:var(--space-4)">
+      <!-- Both icons present — CSS swaps them via [data-theme="dark"] selector, NO inline style -->
+      <button class="theme-toggle" data-action="toggle-theme" aria-label="Toggle dark mode"
+        style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:white;margin:auto">
+        <i class="fa-solid fa-moon"></i>
+        <i class="fa-solid fa-sun"></i>
+      </button>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    function showError(msg) {
+      document.getElementById("error-text").textContent = msg;
+      document.getElementById("error-msg").style.display = "";
+    }
+    function hideError() {
+      document.getElementById("error-msg").style.display = "none";
+    }
+
+    document.getElementById("show-pass-btn").addEventListener("click", function () {
+      const i = document.getElementById("password");
+      const show = i.type === "password";
+      i.type = show ? "text" : "password";
+      this.textContent = show ? "Hide" : "Show";
+    });
+
+    ["email", "password"].forEach(function (id) {
+      document.getElementById(id).addEventListener("keydown", function (e) {
+        if (e.key === "Enter") doLogin();
+      });
+    });
+
+    document.getElementById("login-btn").addEventListener("click", doLogin);
+
+    // Check if already logged in — redirect silently, never show error on failure
+    loadCurrentUser().then(function (user) {
+      if (user) {
+        window.location.href = new URLSearchParams(location.search).get("redirect") || "/";
+      }
+    }).catch(function () {
+      // Server unreachable — stay on page, no error shown
+    });
+
+    async function doLogin() {
+      hideError();
+      var email = document.getElementById("email").value.trim();
+      var password = document.getElementById("password").value;
+      var btn = document.getElementById("login-btn");
+
+      if (!email) return showError("Please enter your email address.");
+      if (!password) return showError("Please enter your password.");
+      if (!validate.email(email)) return showError("That doesn't look like a valid email.");
+
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner" style="margin:auto"></div>';
+
+      try {
+        await api.post("/api/auth/login", { email: email, password: password });
+
+        // Refresh CSRF token — session was regenerated on server.
+        // Safe typeof check in case of version mismatch between files.
+        if (typeof refreshCsrfToken === "function") {
+          await refreshCsrfToken();
+        }
+
+        window.location.href = new URLSearchParams(location.search).get("redirect") || "/";
+
+      } catch (err) {
+        showError(err.message || "Invalid email or password.");
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In';
+      }
+    }
+  </script>
+</body>
+
+</html>

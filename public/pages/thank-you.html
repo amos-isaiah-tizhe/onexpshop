@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <script>(function(){var t=localStorage.getItem("onexp_theme")||(window.matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t);})()</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmed – OneXpShop</title>
+  <link rel="icon" href="/uploads/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/design-system.css">
+  <style>
+    .check-circle {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto var(--space-5);
+      box-shadow: 0 8px 24px rgba(90,200,95,.35);
+      animation: bounceIn .6s ease;
+    }
+    .check-circle.paid     { background: linear-gradient(135deg, var(--success), #4caf50); }
+    .check-circle.whatsapp { background: linear-gradient(135deg, #25d366, #128c7e); }
+
+    @keyframes bounceIn {
+      0%   { transform: scale(0); opacity: 0; }
+      60%  { transform: scale(1.1); }
+      100% { transform: scale(1);   opacity: 1; }
+    }
+
+    .wa-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      background: #25d366;
+      color: #fff;
+      padding: .875rem var(--space-6);
+      border-radius: var(--radius-full);
+      font-weight: var(--font-weight-bold);
+      font-size: var(--font-size-md);
+      text-decoration: none;
+      transition: all var(--transition-fast);
+      box-shadow: 0 4px 16px rgba(37,211,102,.35);
+    }
+    .wa-btn:hover {
+      background: #128c7e;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(37,211,102,.45);
+    }
+  </style>
+</head>
+<body style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:var(--space-6)">
+
+<div style="width:100%;max-width:540px;text-align:center">
+
+  <!-- Icon — swaps based on payment method -->
+  <div id="check-circle" class="check-circle paid">
+    <i id="check-icon" class="fa-solid fa-check" style="font-size:2rem;color:#fff"></i>
+  </div>
+
+  <h1 id="page-title" style="font-size:var(--font-size-3xl);font-weight:800;letter-spacing:-.02em;margin-bottom:var(--space-3)">
+    Order Confirmed!
+  </h1>
+  <p id="page-subtitle" style="color:var(--text-secondary);font-size:var(--font-size-lg);margin-bottom:var(--space-2)">
+    Thank you for your purchase.
+  </p>
+  <p id="order-ref" style="color:var(--text-muted);font-size:var(--font-size-sm);margin-bottom:var(--space-7)"></p>
+
+  <!-- Info cards -->
+  <div class="card card-body" style="text-align:left;margin-bottom:var(--space-5)">
+    <div style="display:flex;flex-direction:column;gap:var(--space-4)">
+
+      <!-- Paystack info -->
+      <div id="info-paystack" style="display:flex;align-items:center;gap:var(--space-3)">
+        <div style="width:36px;height:36px;border-radius:var(--radius-md);background:var(--primary-subtle);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="fa-solid fa-circle-check" style="color:var(--success)"></i>
+        </div>
+        <div>
+          <div style="font-weight:600;font-size:var(--font-size-sm)">Payment Received</div>
+          <div style="font-size:var(--font-size-xs);color:var(--text-muted)">Your card payment was verified successfully</div>
+        </div>
+      </div>
+
+      <!-- WhatsApp info — shown instead for WhatsApp orders -->
+      <div id="info-whatsapp" style="display:none;flex-direction:column;gap:var(--space-3)">
+        <div style="display:flex;align-items:center;gap:var(--space-3)">
+          <div style="width:36px;height:36px;border-radius:var(--radius-md);background:#e8fdf0;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <i class="fa-brands fa-whatsapp" style="color:#25d366;font-size:1.1rem"></i>
+          </div>
+          <div>
+            <div style="font-weight:600;font-size:var(--font-size-sm)">Order Sent to WhatsApp</div>
+            <div style="font-size:var(--font-size-xs);color:var(--text-muted)">Your order details were sent to our WhatsApp. We'll confirm shortly.</div>
+          </div>
+        </div>
+        <div style="background:var(--surface-secondary);border-radius:var(--radius-md);padding:var(--space-3);font-size:var(--font-size-sm);color:var(--text-secondary)">
+          <i class="fa-solid fa-circle-info" style="color:var(--primary);margin-right:.4rem"></i>
+          If WhatsApp didn't open automatically, tap the button below to send your order.
+        </div>
+      </div>
+
+      <div style="height:1px;background:var(--border)"></div>
+
+      <div style="display:flex;align-items:center;gap:var(--space-3)">
+        <div style="width:36px;height:36px;border-radius:var(--radius-md);background:var(--primary-subtle);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="fa-solid fa-truck-fast" style="color:var(--primary)"></i>
+        </div>
+        <div>
+          <div style="font-weight:600;font-size:var(--font-size-sm)">Shipping</div>
+          <div style="font-size:var(--font-size-xs);color:var(--text-muted)">Your order will be processed and shipped soon</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action buttons -->
+  <div id="actions" style="display:flex;gap:var(--space-3);justify-content:center;flex-wrap:wrap">
+    <a href="/shop" class="btn btn-primary btn-lg"><i class="fa-solid fa-store"></i> Continue Shopping</a>
+    <a href="/my-account" class="btn btn-secondary btn-lg"><i class="fa-solid fa-receipt"></i> View Orders</a>
+  </div>
+
+  <!-- WhatsApp resend button — shown only for WhatsApp orders -->
+  <div id="wa-resend-wrap" style="display:none;margin-top:var(--space-4)">
+    <a id="wa-resend-btn" href="#" target="_blank" rel="noopener noreferrer" class="wa-btn">
+      <i class="fa-brands fa-whatsapp"></i> Open WhatsApp to Send Order
+    </a>
+  </div>
+
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+const params     = new URLSearchParams(location.search);
+const orderNum   = params.get("order");
+const method     = params.get("method") || "paystack";  // "paystack" | "whatsapp"
+
+// Show order reference
+if (orderNum) {
+  document.getElementById("order-ref").innerHTML =
+    `Order reference: <strong style="color:var(--primary)">#${safe(orderNum)}</strong>`;
+}
+
+// Customise page based on payment method
+if (method === "whatsapp") {
+  // Swap icon
+  const circle = document.getElementById("check-circle");
+  circle.classList.remove("paid");
+  circle.classList.add("whatsapp");
+  document.getElementById("check-icon").className = "fa-brands fa-whatsapp";
+  document.getElementById("check-icon").style.fontSize = "2rem";
+  document.getElementById("check-icon").style.color = "#fff";
+
+  // Swap title
+  document.getElementById("page-title").textContent    = "Order Received!";
+  document.getElementById("page-subtitle").textContent = "We've received your order and will confirm via WhatsApp shortly.";
+
+  // Show WhatsApp info panel, hide Paystack panel
+  document.getElementById("info-paystack").style.display   = "none";
+  document.getElementById("info-whatsapp").style.display   = "flex";
+  document.getElementById("wa-resend-wrap").style.display  = "block";
+
+  // Wire the resend button using the stored WhatsApp URL
+  const waUrl = sessionStorage.getItem("onexp_wa_url");
+  if (waUrl) {
+    document.getElementById("wa-resend-btn").href = waUrl;
+  } else if (window.__WA_NUMBER__) {
+    // Fallback: generic message
+    const fallback = `https://wa.me/${window.__WA_NUMBER__}?text=${encodeURIComponent(`My order number is #${orderNum}. Please confirm.`)}`;
+    document.getElementById("wa-resend-btn").href = fallback;
+  }
+}
+</script>
+</body>
+</html>

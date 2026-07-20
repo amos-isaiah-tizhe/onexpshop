@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <script>(function () { var t = localStorage.getItem("onexp_theme") || (window.matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light"); document.documentElement.setAttribute("data-theme", t); })()</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <title>Categories – Admin · OneXpShop</title>
+  <link rel="icon" href="/uploads/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/design-system.css">
+</head>
+
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img src="/uploads/favicon.png" alt="OneXpShop logo" class="sidebar-logo-img">
+          <span>OneXpShop</span>
+        </div>
+        <div class="sidebar-subtitle">OneXpShop Control</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/admin"><i class="fa-solid fa-chart-line nav-icon"></i> Dashboard</a>
+        <a href="/admin/products"><i class="fa-solid fa-box nav-icon"></i> Products</a>
+        <a href="/admin/categories" class="active"><i class="fa-solid fa-tags nav-icon"></i> Categories</a>
+        <a href="/admin/orders"><i class="fa-solid fa-receipt nav-icon"></i> Orders</a>
+        <a href="/admin/settings"><i class="fa-solid fa-gear nav-icon"></i> Settings</a>
+        <div class="sidebar-divider"></div>
+        <a href="/"><i class="fa-solid fa-arrow-left nav-icon"></i> View Store</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar" id="sidebar-avatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-username" id="sidebar-username">Admin</div>
+            <div class="sidebar-user-role">Administrator</div>
+          </div>
+        </div>
+        <button type="button" class="sidebar-logout" data-action="logout"><i class="fa-solid fa-right-from-bracket"></i>
+          Sign out</button>
+      </div>
+    </aside>
+
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div style="display:flex;align-items:center;gap:var(--space-3)">
+          <button id="sidebar-toggle" class="mobile-menu-btn" data-action="toggle-sidebar" style="display:flex"
+            aria-label="Toggle sidebar"><span></span><span></span><span></span></button>
+          <h1 class="admin-topbar-title"><i class="fa-solid fa-tags"
+              style="color:var(--primary);margin-right:.4rem"></i>Categories</h1>
+        </div>
+        <div style="display:flex;gap:var(--space-2);align-items:center">
+          <button id="theme-toggle" class="theme-toggle" data-action="toggle-theme" aria-label="Toggle dark mode">
+            <i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i>
+          </button>
+          <button class="btn btn-primary" id="add-cat-btn"><i class="fa-solid fa-plus"></i> Add Category</button>
+        </div>
+      </div>
+      <div class="admin-content">
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Slug</th>
+                  <th>Description</th>
+                  <th style="text-align:right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="cat-tbody">
+                <tr>
+                  <td colspan="4" style="text-align:center;padding:2rem">
+                    <div class="spinner"></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Modal -->
+  <div id="cat-modal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title" id="modal-title">Add Category</span>
+        <button class="modal-close" data-action="close-modal" data-val="cat-modal"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="edit-id">
+        <div class="form-group">
+          <label for="cat-name"><i class="fa-solid fa-tag"></i> Category Name *</label>
+          <input id="cat-name" class="form-control" placeholder="e.g. Electronics" maxlength="100">
+        </div>
+        <div class="form-group">
+          <label for="cat-slug"><i class="fa-solid fa-link"></i> Slug <span class="form-hint">(auto-generated if
+              blank)</span></label>
+          <input id="cat-slug" class="form-control" placeholder="e.g. electronics">
+          <p class="form-hint">URL-friendly identifier (lowercase, hyphens only)</p>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label for="cat-desc"><i class="fa-solid fa-align-left"></i> Description</label>
+          <textarea id="cat-desc" class="form-control" rows="2" placeholder="Brief description…"
+            maxlength="500"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-action="close-modal" data-val="cat-modal"><i
+            class="fa-solid fa-xmark"></i> Cancel</button>
+        <button class="btn btn-primary" id="save-cat-btn"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirm -->
+  <div id="delete-modal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal" style="max-width:420px">
+      <div class="modal-header">
+        <span class="modal-title" style="color:var(--error)"><i class="fa-solid fa-triangle-exclamation"></i> Delete
+          Category</span>
+        <button class="modal-close" data-action="close-modal" data-val="delete-modal"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text-secondary)">Delete <strong id="delete-cat-name"></strong>? Products in this category
+          will be uncategorised.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-action="close-modal" data-val="delete-modal">Cancel</button>
+        <button class="btn btn-danger" id="confirm-delete-cat-btn"><i class="fa-solid fa-trash-can"></i> Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    let allCats = [], deleteTargetId = null;
+
+    requireAdmin().then(user => {
+      if (!user) return;
+      document.getElementById("sidebar-avatar").textContent = (user.name || user.email || "A").charAt(0).toUpperCase();
+      document.getElementById("sidebar-username").textContent = user.name || user.email;
+      loadCats();
+    });
+
+    async function loadCats() {
+      allCats = await api.get("/api/categories");
+      renderTable();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("cat-tbody");
+      if (!allCats.length) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-muted)"><i class="fa-solid fa-tags"></i> No categories yet</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = allCats.map(c => `
+    <tr>
+      <td style="font-weight:var(--font-weight-semibold)">${safe(c.name)}</td>
+      <td><code style="background:var(--surface-secondary);padding:2px 6px;border-radius:4px;font-size:.8rem">${safe(c.slug || "")}</code></td>
+      <td style="color:var(--text-muted)">${safe(c.description || "—")}</td>
+      <td style="text-align:right">
+        <div style="display:flex;gap:.5rem;justify-content:flex-end">
+          <button class="btn btn-secondary btn-sm" data-action="cat-edit" data-val="${c.id}"><i class="fa-solid fa-pen-to-square"></i></button>
+          <button class="btn btn-danger btn-sm" data-action="cat-delete" data-val="${c.id}" data-name="${safe(c.name)}"><i class="fa-solid fa-trash-can"></i></button>
+        </div>
+      </td>
+    </tr>`).join("");
+    }
+
+    registerActions({
+      "cat-edit": (val) => editCat(+val),
+      "cat-delete": (val, el) => promptDelete(+val, el.dataset.name || ""),
+    });
+
+    // Auto-generate slug from name
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("cat-name")?.addEventListener("input", e => {
+        const slugEl = document.getElementById("cat-slug");
+        if (!slugEl._manuallyEdited) {
+          slugEl.value = e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        }
+      });
+      document.getElementById("cat-slug")?.addEventListener("input", () => {
+        document.getElementById("cat-slug")._manuallyEdited = true;
+      });
+    });
+
+    function openAddModal() {
+      document.getElementById("modal-title").textContent = "Add Category";
+      document.getElementById("edit-id").value = "";
+      document.getElementById("cat-name").value = "";
+      document.getElementById("cat-slug").value = "";
+      document.getElementById("cat-desc").value = "";
+      document.getElementById("cat-slug")._manuallyEdited = false;
+      openModal("cat-modal");
+    }
+
+    function editCat(id) {
+      const c = allCats.find(x => x.id === id);
+      if (!c) return;
+      document.getElementById("modal-title").textContent = "Edit Category";
+      document.getElementById("edit-id").value = c.id;
+      document.getElementById("cat-name").value = c.name;
+      document.getElementById("cat-slug").value = c.slug || "";
+      document.getElementById("cat-desc").value = c.description || "";
+      document.getElementById("cat-slug")._manuallyEdited = true;
+      openModal("cat-modal");
+    }
+
+    async function saveCategory() {
+      const name = document.getElementById("cat-name").value.trim();
+      if (!name) { toast.error("Category name is required."); return; }
+      const payload = {
+        name,
+        slug: document.getElementById("cat-slug").value.trim() || name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        description: document.getElementById("cat-desc").value.trim(),
+      };
+      const editId = document.getElementById("edit-id").value;
+      try {
+        if (editId) { await api.put(`/api/categories/${editId}`, payload); toast.success("Category updated!"); }
+        else { await api.post("/api/categories", payload); toast.success("Category created!"); }
+        closeModal("cat-modal");
+        await loadCats();
+      } catch (err) { toast.error(err.message || "Save failed."); }
+    }
+
+    function promptDelete(id, name) {
+      deleteTargetId = id;
+      document.getElementById("delete-cat-name").textContent = `"${name}"`;
+      openModal("delete-modal");
+    }
+
+    async function confirmDelete() {
+      try {
+        await api.delete(`/api/categories/${deleteTargetId}`);
+        toast.success("Category deleted.");
+        closeModal("delete-modal");
+        deleteTargetId = null;
+        await loadCats();
+      } catch (err) { toast.error(err.message || "Delete failed."); }
+    }
+  </script>
+  <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+      var addBtn = document.getElementById("add-cat-btn");
+      if (addBtn) addBtn.addEventListener("click", openAddModal);
+
+      var saveBtn = document.getElementById("save-cat-btn");
+      if (saveBtn) saveBtn.addEventListener("click", saveCategory);
+
+      var delBtn = document.getElementById("confirm-delete-cat-btn");
+      if (delBtn) delBtn.addEventListener("click", confirmDelete);
+    });
+
+  </script>
+</body>
+
+</html>

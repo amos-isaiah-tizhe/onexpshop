@@ -1,0 +1,158 @@
+/* =========================================================
+   TOKENS / CORE
+========================================================= */
+
+:root {
+
+  /* =========================================================
+     BRAND PALETTE
+  ========================================================= */
+
+  --brand-950: #100c19;
+  --brand-900: #201833;
+  --brand-800: #30254c;
+  --brand-700: #403166;
+  --brand-600: #503e7f;
+  --brand-500: #7057b2;
+  --brand-400: #8063cc;
+  --brand-300: #906fe5;
+  --brand-200: #9876f2;
+  --brand-100: #a07cff;
+
+
+  /* =========================================================
+     NEUTRAL PALETTE
+  ========================================================= */
+
+  --neutral-950: #171619;
+  --neutral-900: #2e2c33;
+  --neutral-800: #45424c;
+  --neutral-700: #5c5866;
+  --neutral-600: #736f7f;
+  --neutral-500: #8a8599;
+  --neutral-400: #a19bb2;
+  --neutral-300: #b8b1cc;
+  --neutral-200: #cfc7e5;
+  --neutral-100: #e6deff;
+
+  --white: #ffffff;
+  --black: #000000;
+
+
+  /* =========================================================
+     STATUS COLORS
+  ========================================================= */
+
+  --success-500: #388E3C;
+  --warning-500: #FBC02D;
+  --info-500: #1976D2;
+  --error-500: #ff362a;
+
+
+  /* =========================================================
+     TYPOGRAPHY
+  ========================================================= */
+
+  --font-family-base: 'Inter', system-ui, sans-serif;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 2rem;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.8;
+
+
+  /* =========================================================
+     SEMANTIC TOKENS - LIGHT MODE
+  ========================================================= */
+
+  /* Backgrounds */
+  --background: #f8f7ff;
+  --surface: var(--white);
+  --surface-secondary: #f1efff;
+
+  /* Text */
+  --text-primary: var(--neutral-950);
+  --text-secondary: var(--neutral-700);
+  --text-muted: var(--neutral-500);
+
+  /* Borders */
+  --border: #d8d2f0;
+
+  /* Brand */
+  --primary: var(--brand-400);
+  --primary-hover: var(--brand-500);
+  --primary-active: var(--brand-600);
+
+  /* Status */
+  --success: var(--success-500);
+  --warning: var(--warning-500);
+  --info: var(--info-500);
+  --error: var(--error-500);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.08);
+  --shadow-lg: 0 12px 24px rgb(0 0 0 / 0.12);
+
+  /* Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+}
+
+
+/* =========================================================
+   DARK MODE
+========================================================= */
+
+[data-theme="dark"] {
+
+  /* Backgrounds */
+  --background: #0f0d14;
+  --surface: var(--neutral-950);
+  --surface-secondary: #201d29;
+
+  /* Text */
+  --text-primary: #f4f1ff;
+  --text-secondary: var(--neutral-200);
+  --text-muted: var(--neutral-500);
+
+  /* Borders */
+  --border: var(--brand-800);
+
+  /* Brand */
+  --primary: var(--brand-200);
+  --primary-hover: var(--brand-100);
+  --primary-active: #b296ff;
+
+  /* Status */
+  --success: #5ac85f;
+  --warning: #ffd54f;
+  --error: #ff6b61;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 12px 24px rgb(0 0 0 / 0.5);
+}

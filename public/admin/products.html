@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <script>(function () { var t = localStorage.getItem("onexp_theme") || (window.matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light"); document.documentElement.setAttribute("data-theme", t); })()</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <title>Products – Admin · OneXpShop</title>
+  <link rel="icon" href="/uploads/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/design-system.css">
+</head>
+
+<body>
+  <div class="admin-layout">
+
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img src="/uploads/favicon.png" alt="OneXpShop logo" class="sidebar-logo-img">
+          <span>OneXpShop</span>
+        </div>
+        <div class="sidebar-subtitle">OneXpShop Control</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/admin"><i class="fa-solid fa-chart-line nav-icon"></i> Dashboard</a>
+        <a href="/admin/products" class="active"><i class="fa-solid fa-box nav-icon"></i> Products</a>
+        <a href="/admin/categories"><i class="fa-solid fa-tags nav-icon"></i> Categories</a>
+        <a href="/admin/orders"><i class="fa-solid fa-receipt nav-icon"></i> Orders</a>
+        <a href="/admin/settings"><i class="fa-solid fa-gear nav-icon"></i> Settings</a>
+        <div class="sidebar-divider"></div>
+        <a href="/"><i class="fa-solid fa-arrow-left nav-icon"></i> View Store</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar" id="sidebar-avatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-username" id="sidebar-username">Admin</div>
+            <div class="sidebar-user-role">Administrator</div>
+          </div>
+        </div>
+        <button type="button" class="sidebar-logout" data-action="logout"><i class="fa-solid fa-right-from-bracket"></i>
+          Sign out</button>
+      </div>
+    </aside>
+
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div style="display:flex;align-items:center;gap:var(--space-3)">
+          <button id="sidebar-toggle" class="mobile-menu-btn" data-action="toggle-sidebar" style="display:flex"
+            aria-label="Toggle sidebar"><span></span><span></span><span></span></button>
+          <h1 class="admin-topbar-title"><i class="fa-solid fa-box"
+              style="color:var(--primary);margin-right:.4rem"></i>Products</h1>
+        </div>
+        <div style="display:flex;gap:var(--space-2);align-items:center">
+          <button id="theme-toggle" class="theme-toggle" data-action="toggle-theme" aria-label="Toggle dark mode">
+            <i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i>
+          </button>
+          <button class="btn btn-primary" id="add-product-btn">
+            <i class="fa-solid fa-plus"></i> Add Product
+          </button>
+        </div>
+      </div>
+
+      <div class="admin-content">
+        <!-- Search bar -->
+        <div style="margin-bottom:var(--space-4);display:flex;gap:var(--space-3);align-items:center;flex-wrap:wrap">
+          <div style="position:relative;flex:1;min-width:200px">
+            <i class="fa-solid fa-magnifying-glass"
+              style="position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:.85rem"></i>
+            <input id="search-products" class="form-control" placeholder="Search products…" style="padding-left:2.25rem"
+              data-action-input="filter-products">
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Name</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                  <th style="text-align:right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="products-tbody">
+                <tr>
+                  <td colspan="7" style="text-align:center;padding:2rem">
+                    <div class="spinner"></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Modal -->
+  <div id="product-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal" style="max-width:600px">
+      <div class="modal-header">
+        <span class="modal-title" id="modal-title">Add Product</span>
+        <button class="modal-close" data-action="close-modal" data-val="product-modal" aria-label="Close"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="edit-id">
+        <div class="form-group">
+          <label for="prod-name"><i class="fa-solid fa-pen"></i> Product Name *</label>
+          <input id="prod-name" class="form-control" placeholder="e.g. Running Shoes" maxlength="200">
+        </div>
+        <div class="form-group">
+          <label for="prod-desc"><i class="fa-solid fa-align-left"></i> Description</label>
+          <textarea id="prod-desc" class="form-control" rows="3" placeholder="Describe your product…"
+            maxlength="2000"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)">
+          <div class="form-group">
+            <label for="prod-price"><i class="fa-solid fa-naira-sign"></i> Price *</label>
+            <input id="prod-price" type="number" step="0.01" min="0" class="form-control" placeholder="₦11,229.99">
+          </div>
+          <div class="form-group">
+            <label for="prod-stock"><i class="fa-solid fa-warehouse"></i> Stock</label>
+            <input id="prod-stock" type="number" class="form-control" value="0" min="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="prod-category"><i class="fa-solid fa-tag"></i> Category</label>
+          <select id="prod-category" class="form-control">
+            <option value="">— No Category —</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-top:var(--space-3)">
+          <label class="toggle">
+            <input type="checkbox" id="prod-active" checked>
+            <span class="toggle-track"></span>
+            <span style="font-size:var(--font-size-sm);font-weight:600;color:var(--text-secondary)">
+              Active (visible in store)
+            </span>
+          </label>
+        </div>
+        <div class="form-group">
+          <label for="prod-image-file">
+            <i class="fa-solid fa-image"></i> Product Image
+          </label>
+          <input type="file" id="prod-image-file" class="form-control" accept="image/jpeg,image/png,image/webp"
+            style="padding:.45rem var(--space-3)">
+          <p class="form-hint">JPG, PNG or WebP — max 5MB</p>
+
+          <!-- Preview + upload status -->
+          <div id="image-upload-status" style="display:none;margin-top:var(--space-3);font-size:var(--font-size-sm)">
+          </div>
+          <div id="image-preview-wrap" style="display:none;margin-top:var(--space-3)">
+            <img id="image-preview" src="" alt="Preview"
+              style="width:120px;height:120px;object-fit:cover;border-radius:var(--radius-md);border:1px solid var(--border)">
+            <button type="button" id="remove-image-btn" class="btn btn-danger btn-sm"
+              style="display:block;margin-top:.5rem">
+              <i class="fa-solid fa-trash-can"></i> Remove
+            </button>
+          </div>
+        </div>
+
+      </div><!-- ← this closes modal-body (was missing) -->
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-action="close-modal" data-val="product-modal">
+          <i class="fa-solid fa-xmark"></i> Cancel
+        </button>
+        <button class="btn btn-primary" id="save-product-btn">
+          <i class="fa-solid fa-floppy-disk"></i> Save Product
+        </button>
+      </div>
+
+    </div><!-- ← closes .modal -->
+  </div><!-- ← closes #product-modal overlay -->
+
+  <!-- Delete Confirm Modal -->
+  <div id="delete-modal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal" style="max-width:420px">
+      <div class="modal-header">
+        <span class="modal-title" style="color:var(--error)">
+          <i class="fa-solid fa-triangle-exclamation"></i> Delete Product
+        </span>
+        <button class="modal-close" data-action="close-modal" data-val="delete-modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text-secondary)">Are you sure you want to delete <strong
+            id="delete-product-name"></strong>? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-action="close-modal" data-val="delete-modal">Cancel</button>
+        <button class="btn btn-danger" id="confirm-delete-btn">
+          <i class="fa-solid fa-trash-can"></i> Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    let allProducts = [], categories = [], deleteTargetId = null;
+    let _uploadedImageUrl = null;
+
+    requireAdmin().then(user => {
+      if (!user) return;
+      document.getElementById("sidebar-avatar").textContent = (user.name || user.email || "A").charAt(0).toUpperCase();
+      document.getElementById("sidebar-username").textContent = user.name || user.email;
+      loadData();
+    });
+
+    async function loadData() {
+      [allProducts, categories] = await Promise.all([api.get("/api/products"), api.get("/api/categories")]);
+      renderTable(allProducts);
+      const sel = document.getElementById("prod-category");
+      sel.innerHTML = `<option value="">— No Category —</option>` +
+        categories.map(c => `<option value="${c.id}">${safe(c.name)}</option>`).join("");
+    }
+
+    function filterTable() {
+      const q = document.getElementById("search-products").value.toLowerCase();
+      renderTable(q ? allProducts.filter(p => p.name.toLowerCase().includes(q)) : allProducts);
+    }
+
+    function renderTable(products) {
+      const tbody = document.getElementById("products-tbody");
+      if (!products.length) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted)"><i class="fa-solid fa-box-open"></i> No products found</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = products.map(p => `
+      <tr>
+        <td>
+          ${p.imageUrls?.[0]
+          ? `<img src="${safeUrl(p.imageUrls[0])}" style="width:44px;height:44px;object-fit:cover;border-radius:var(--radius-md);border:1px solid var(--border)" loading="lazy" alt="">`
+          : `<div style="width:44px;height:44px;border-radius:var(--radius-md);background:var(--surface-secondary);display:flex;align-items:center;justify-content:center"><i class="fa-solid fa-image" style="color:var(--neutral-400)"></i></div>`}
+        </td>
+        <td style="font-weight:var(--font-weight-semibold)">${safe(p.name)}</td>
+        <td style="font-weight:600;color:var(--primary)">${formatPrice(p.price)}</td>
+        <td>
+          <span style="color:${p.stock > 0 ? 'var(--success)' : 'var(--error)'}">
+            <i class="fa-solid fa-${p.stock > 0 ? 'circle-check' : 'circle-xmark'}"></i> ${safe(String(p.stock))}
+          </span>
+        </td>
+        <td style="color:var(--text-muted)">${safe(categories.find(c => c.id === p.category_id)?.name || "—")}</td>
+        <td><span class="badge ${p.is_active !== false ? 'badge-completed' : 'badge-cancelled'}">${p.is_active !== false ? 'Active' : 'Hidden'}</span></td>
+        <td style="text-align:right">
+          <div style="display:flex;gap:.5rem;justify-content:flex-end">
+            <button class="btn btn-secondary btn-sm" data-action="prod-edit" data-val="${p.id}" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button class="btn btn-danger btn-sm" data-action="prod-delete" data-val="${p.id}" data-name="${safe(p.name)}" title="Delete"><i class="fa-solid fa-trash-can"></i></button>
+          </div>
+        </td>
+      </tr>`).join("");
+    }
+
+    function openAddModal() {
+      document.getElementById("modal-title").textContent = "Add Product";
+      document.getElementById("edit-id").value = "";
+      document.getElementById("prod-name").value = "";
+      document.getElementById("prod-desc").value = "";
+      document.getElementById("prod-price").value = "";
+      document.getElementById("prod-stock").value = "0";
+      document.getElementById("prod-category").value = "";
+      document.getElementById("prod-active").checked = true;
+      _uploadedImageUrl = null;
+      document.getElementById("prod-image-file").value = "";
+      document.getElementById("image-preview-wrap").style.display = "none";
+      document.getElementById("image-upload-status").style.display = "none";
+      openModal("product-modal");
+    }
+
+    function editProduct(id) {
+      const p = allProducts.find(x => Number(x.id) === Number(id));
+      if (!p) return;
+      document.getElementById("modal-title").textContent = "Edit Product";
+      document.getElementById("edit-id").value = p.id;
+      document.getElementById("prod-name").value = p.name;
+      document.getElementById("prod-desc").value = p.description || "";
+      document.getElementById("prod-price").value = p.price;
+      document.getElementById("prod-stock").value = p.stock;
+      document.getElementById("prod-category").value = p.category_id || "";
+      document.getElementById("prod-active").checked = p.is_active !== false;
+
+      _uploadedImageUrl = (p.imageUrls && p.imageUrls[0]) ? p.imageUrls[0] : null;
+      const previewWrap = document.getElementById("image-preview-wrap");
+      const previewImg = document.getElementById("image-preview");
+      if (_uploadedImageUrl) {
+        previewImg.src = _uploadedImageUrl;
+        previewWrap.style.display = "";
+        document.getElementById("image-upload-status").style.display = "none";
+      } else {
+        previewWrap.style.display = "none";
+      }
+
+      openModal("product-modal");
+    }
+
+    async function saveProduct() {
+      const name = document.getElementById("prod-name").value.trim();
+      const price = document.getElementById("prod-price").value;
+      if (!name) { toast.error("Product name is required."); return; }
+      if (!validate.price(price)) { toast.error("Please enter a valid price."); return; }
+
+      const payload = {
+        name,
+        description: document.getElementById("prod-desc").value.trim(),
+        price: parseFloat(price),
+        stock: parseInt(document.getElementById("prod-stock").value) || 0,
+        category_id: document.getElementById("prod-category").value || null,
+        imageUrls: _uploadedImageUrl ? [_uploadedImageUrl] : [],
+        is_active: document.getElementById("prod-active").checked,
+      };
+
+      const editId = document.getElementById("edit-id").value;
+      try {
+        if (editId) {
+          await api.put(`/api/products/${editId}`, payload);
+          toast.success("Product updated!");
+        } else {
+          await api.post("/api/products", payload);
+          toast.success("Product created!");
+        }
+        closeModal("product-modal");
+        await loadData();
+      } catch (err) {
+        toast.error(err.message || "Save failed.");
+      }
+    }
+
+    function promptDelete(id, name) {
+      deleteTargetId = Number(id);
+      document.getElementById("delete-product-name").textContent = `"${name}"`;
+      openModal("delete-modal");
+    }
+
+    async function confirmDelete() {
+      if (deleteTargetId == null || Number.isNaN(deleteTargetId)) return;
+      try {
+        await api.delete(`/api/products/${deleteTargetId}`);
+        toast.success("Product deleted.");
+        closeModal("delete-modal");
+        deleteTargetId = null;
+        await loadData();
+      } catch (err) {
+        toast.error(err.message || "Delete failed.");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      // Button wiring
+      document.getElementById("add-product-btn")?.addEventListener("click", openAddModal);
+      document.getElementById("save-product-btn")?.addEventListener("click", saveProduct);
+      document.getElementById("confirm-delete-btn")?.addEventListener("click", confirmDelete);
+
+      // Search
+      document.getElementById("search-products")?.addEventListener("input", filterTable);
+
+      // Image upload
+      document.getElementById("prod-image-file")?.addEventListener("change", async function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        const statusEl = document.getElementById("image-upload-status");
+        const previewWrap = document.getElementById("image-preview-wrap");
+        const previewImg = document.getElementById("image-preview");
+
+        statusEl.style.display = "";
+        statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading…';
+
+        const formData = new FormData();
+        formData.append("image", file);
+
+        try {
+          const res = await fetch("/api/upload/product-image", {
+            method: "POST",
+            credentials: "include",
+            headers: { "X-CSRF-Token": await ensureCsrfToken() || "" },
+            body: formData,
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Upload failed");
+
+          _uploadedImageUrl = data.url;
+          statusEl.innerHTML = '<span style="color:var(--success)"><i class="fa-solid fa-circle-check"></i> Uploaded</span>';
+          previewImg.src = data.url;
+          previewWrap.style.display = "";
+        } catch (err) {
+          _uploadedImageUrl = null;
+          statusEl.innerHTML = `<span style="color:var(--error)"><i class="fa-solid fa-triangle-exclamation"></i> ${err.message}</span>`;
+          previewWrap.style.display = "none";
+        }
+      });
+
+      // Remove image
+      document.getElementById("remove-image-btn")?.addEventListener("click", function () {
+        _uploadedImageUrl = null;
+        document.getElementById("prod-image-file").value = "";
+        document.getElementById("image-preview-wrap").style.display = "none";
+        document.getElementById("image-upload-status").style.display = "none";
+      });
+    });
+  </script>
+</body>
+
+</html>

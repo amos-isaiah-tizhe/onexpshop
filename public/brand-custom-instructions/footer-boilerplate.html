@@ -1,0 +1,132 @@
+<style>
+  /* ================================
+   FOOTER BASE (MOBILE FIRST)
+================================ */
+
+.onexp-footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.onexp-footer__container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+/* ================================
+   BRAND SECTION
+================================ */
+
+.onexp-footer__brand-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.onexp-footer__brand {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.onexp-footer__meta {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ================================
+   NAV LINKS (MOBILE)
+================================ */
+
+.onexp-footer__nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.onexp-footer__link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: var(--font-size-md);
+  transition: color 0.2s ease;
+}
+
+.onexp-footer__link:hover {
+  color: var(--primary);
+}
+
+/* ================================
+   TABLET (SMALL SCREENS)
+================================ */
+
+@media (min-width: 600px) {
+  .onexp-footer__container {
+    padding: var(--space-5);
+  }
+
+  .onexp-footer__nav {
+    flex-direction: row;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+}
+
+/* ================================
+   DESKTOP
+================================ */
+
+@media (min-width: 1024px) {
+  .onexp-footer__container {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-6);
+  }
+
+  .onexp-footer__nav {
+    justify-content: flex-end;
+  }
+
+  .onexp-footer__brand-group {
+    align-items: flex-start;
+  }
+}
+</style>
+<link rel="stylesheet" href="tokens/tokens.css">
+<footer class="onexp-footer">
+  <div class="onexp-footer__container">
+    <!-- Links -->
+    <nav class="onexp-footer__nav" aria-label="Footer navigation">
+
+      <a href="/support" class="onexp-footer__link">Support</a>
+      <a href="/about" class="onexp-footer__link">About</a>
+      <a href="/docs" class="onexp-footer__link">Docs</a>
+
+    </nav>
+    <!-- Brand + Meta -->
+    <div class="onexp-footer__brand-group">
+      <a 
+        class="onexp-footer__brand" 
+        href="https://amos-isaiah-tizhe.onrender.com" 
+        target="_blank" 
+        rel="noopener"
+      >
+      OneXportal
+      </a>
+
+      <p class="onexp-footer__meta">
+        Built by Amos Isaiah Tizhe • © <span id="year"></span>
+      </p>
+
+    </div>
+
+  </div>
+</footer>
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>

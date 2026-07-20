@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <script>(function () { var t = localStorage.getItem("onexp_theme") || (window.matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light"); document.documentElement.setAttribute("data-theme", t); })()</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <title>Shop – OneXpShop</title>
+  <link rel="icon" href="/uploads/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/design-system.css">
+</head>
+
+<body>
+  
+<header class="site-header">
+  <div class="container header-inner">
+
+    <!-- Left: Logo -->
+    <a href="/" class="logo">
+      <span class="logo-icon">
+        <img src="/uploads/favicon.png" alt="OneXpShop logo">
+      </span>
+      OneXp<span class="logo-accent">Shop</span>
+    </a>
+
+    <!-- Right: actions -->
+    <div class="header-actions">
+      <button id="theme-toggle" class="theme-toggle" data-action="toggle-theme" aria-label="Toggle dark mode">
+        <i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i>
+      </button>
+      <a href="/cart" class="cart-btn">
+        <i class="fa-solid fa-bag-shopping"></i> Cart
+        <span class="cart-badge">0</span>
+      </a>
+      <button class="mobile-menu-btn" id="mobile-menu-btn"
+        data-action="toggle-nav" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Nav (collapses on mobile) -->
+    <nav class="site-nav" id="site-nav">
+      <a href="/shop"><i class="fa-solid fa-store"></i> Shop</a>
+      <a href="/my-account"><i class="fa-solid fa-user"></i> Account</a>
+    </nav>
+
+  </div>
+</header>
+
+  <div class="container" style="padding-top:var(--space-6);padding-bottom:var(--space-10)">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/"><i class="fa-solid fa-house"></i></a>
+      <span class="breadcrumb-sep"><i class="fa-solid fa-chevron-right" style="font-size:.6rem"></i></span>
+      <span class="breadcrumb-current">Shop</span>
+    </nav>
+
+    <div class="page-header" style="padding-top:var(--space-2)">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div>
+          <h1 style="font-size:var(--font-size-3xl);font-weight:var(--font-weight-extrabold);letter-spacing:-.02em">All
+            Products</h1>
+          <p id="product-count" class="text-muted" style="margin-top:.25rem;font-size:var(--font-size-sm)">Loading…</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:.75rem">
+          <div style="position:relative">
+            <i class="fa-solid fa-magnifying-glass"
+              style="position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:.85rem"></i>
+            <input id="search-input" class="form-control" placeholder="Search products…"
+              style="padding-left:2.25rem;width:220px" data-action-input="search-products">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="shop-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar-filter">
+        <div class="card card-body" style="padding:var(--space-4)">
+          <h2
+            style="font-size:var(--font-size-sm);font-weight:var(--font-weight-semibold);color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:var(--space-3)">
+            <i class="fa-solid fa-filter" style="margin-right:.4rem"></i>Categories
+          </h2>
+          <ul class="cat-list" id="cat-list">
+            <li><button class="active" id="filter-all-btn">All Products</button></li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- Product grid -->
+      <main>
+        <div id="products-grid" class="grid grid-3">
+          <div class="loading-state" style="grid-column:1/-1">
+            <div class="spinner spinner-lg"></div>
+            <p>Loading products…</p>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <div class="footer-brand-name">OneXpShop</div>
+            <p class="footer-tagline">Premium products curated just for you.</p>
+          </div>
+          <div>
+            <h3 class="footer-col-title">Support</h3>
+            <nav class="footer-links"><a href="#">FAQ</a><a href="#">Privacy</a><a href="#">Terms</a></nav>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p class="footer-copy">© <span id="footer-year"></span> OneXpShop · OneXportal Enterprise</p>
+          <p class="footer-copy" style="opacity:.6">Built by Amos Isaiah Tizhe</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    document.getElementById("footer-year").textContent = new Date().getFullYear();
+    let allProducts = [];
+    let currentCategoryId = null;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has("category")) currentCategoryId = parseInt(urlParams.get("category"));
+
+    document.getElementById("filter-all-btn")?.addEventListener("click", function () {
+      filterCategory(null, this);
+    });
+
+    api.get("/api/categories").then(cats => {
+      const list = document.getElementById("cat-list");
+      cats.forEach(c => {
+        const li = document.createElement("li");
+        const btn = document.createElement("button");
+        btn.innerHTML = `<i class="fa-solid fa-tag" style="margin-right:.4rem;font-size:.7rem;color:var(--primary)"></i>${safe(c.name)}`;
+        if (currentCategoryId === c.id) btn.classList.add("active");
+        btn.onclick = () => filterCategory(c.id, btn);
+        li.appendChild(btn);
+        list.appendChild(li);
+      });
+    }).catch(() => { });
+
+    api.get("/api/products").then(products => {
+      allProducts = products;
+      renderProducts();
+    }).catch(() => {
+      document.getElementById("products-grid").innerHTML = `<p class="text-muted" style="grid-column:1/-1">Could not load products.</p>`;
+    });
+
+    function filterCategory(categoryId, clickedBtn) {
+      currentCategoryId = categoryId;
+      document.querySelectorAll(".cat-list button").forEach(b => b.classList.remove("active"));
+      if (clickedBtn) clickedBtn.classList.add("active");
+      renderProducts();
+    }
+
+    function renderProducts() {
+      const search = (document.getElementById("search-input")?.value || "").toLowerCase().trim();
+      let filtered = currentCategoryId ? allProducts.filter(p => p.category_id === currentCategoryId) : allProducts;
+      if (search) filtered = filtered.filter(p => p.name.toLowerCase().includes(search) || (p.description || "").toLowerCase().includes(search));
+
+      document.getElementById("product-count").textContent = `${filtered.length} product${filtered.length !== 1 ? "s" : ""} found`;
+
+      const grid = document.getElementById("products-grid");
+      if (!filtered.length) {
+        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <div class="empty-icon"><i class="fa-solid fa-face-frown"></i></div>
+      <h3>No products found</h3>
+      <p>Try a different category or search term</p>
+    </div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(renderProductCard).join("");
+    }
+
+    registerActions({ "search-products": () => renderProducts() });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <script>(function () { var t = localStorage.getItem("onexp_theme") || (window.matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light"); document.documentElement.setAttribute("data-theme", t); })()</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <title>Dashboard – Admin · OneXpShop</title>
+  <link rel="icon" href="/uploads/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/design-system.css">
+</head>
+
+<body>
+  <div class="admin-layout">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img src="/uploads/favicon.png" alt="OneXpShop logo" class="sidebar-logo-img">
+          <span>OneXpShop</span>
+        </div>
+        <div class="sidebar-subtitle">OneXpShop Control</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/admin" class="active"><i class="fa-solid fa-chart-line nav-icon"></i> Dashboard</a>
+        <a href="/admin/products"><i class="fa-solid fa-box nav-icon"></i> Products</a>
+        <a href="/admin/categories"><i class="fa-solid fa-tags nav-icon"></i> Categories</a>
+        <a href="/admin/orders"><i class="fa-solid fa-receipt nav-icon"></i> Orders</a>
+        <a href="/admin/settings"><i class="fa-solid fa-gear nav-icon"></i> Settings</a>
+        <div class="sidebar-divider"></div>
+        <a href="/"><i class="fa-solid fa-arrow-left nav-icon"></i> View Store</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar" id="sidebar-avatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-username" id="sidebar-username">Admin</div>
+            <div class="sidebar-user-role">Administrator</div>
+          </div>
+        </div>
+        <button type="button" class="sidebar-logout" data-action="logout"><i class="fa-solid fa-right-from-bracket"></i>
+          Sign out</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div style="display:flex;align-items:center;gap:var(--space-3)">
+          <button id="sidebar-toggle" class="mobile-menu-btn" style="display:flex" aria-label="Toggle sidebar"
+            data-action="toggle-sidebar"><span></span><span></span><span></span></button>
+          <h1 class="admin-topbar-title"><i class="fa-solid fa-chart-line"
+              style="color:var(--primary);margin-right:.4rem"></i>Dashboard</h1>
+        </div>
+        <div style="display:flex;align-items:center;gap:var(--space-3)">
+          <button id="theme-toggle" class="theme-toggle" data-action="toggle-theme" aria-label="Toggle dark mode">
+            <i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i>
+          </button>
+          <a href="/" class="btn btn-secondary btn-sm"><i class="fa-solid fa-store"></i> View Store</a>
+        </div>
+      </div>
+
+      <div class="admin-content">
+
+        <!-- Stats -->
+        <div class="grid grid-3" style="margin-bottom:var(--space-6)">
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-box" style="color:var(--primary)"></i></div>
+            <div class="stat-label">Total Products</div>
+            <div class="stat-value" id="stat-products">—</div>
+            <div class="stat-change"><i class="fa-solid fa-arrow-up-right" style="color:var(--success)"></i> Active
+              listings</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-tags" style="color:var(--primary)"></i></div>
+            <div class="stat-label">Categories</div>
+            <div class="stat-value" id="stat-categories">—</div>
+            <div class="stat-change"><i class="fa-solid fa-layer-group" style="color:var(--info)"></i> Product groups
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-receipt" style="color:var(--primary)"></i></div>
+            <div class="stat-label">Total Orders</div>
+            <div class="stat-value" id="stat-orders">—</div>
+            <div class="stat-change" id="stat-revenue"></div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card" style="margin-bottom:var(--space-6)">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-bolt" style="color:var(--primary);margin-right:.4rem"></i>Quick Actions</h2>
+          </div>
+          <div class="card-body">
+            <div class="grid grid-2" style="gap:var(--space-4)">
+              <a href="/admin/products" class="card card-body"
+                style="text-decoration:none;color:inherit;transition:all var(--transition-fast);display:flex;align-items:center;gap:var(--space-4)"
+                onmouseover="this.style.borderColor='var(--primary)'"
+                onmouseout="this.style.borderColor='var(--border)'">
+                <div class="stat-icon" style="margin-bottom:0;flex-shrink:0"><i class="fa-solid fa-box"
+                    style="color:var(--primary)"></i></div>
+                <div>
+                  <div style="font-weight:var(--font-weight-semibold)">Manage Products</div>
+                  <div class="text-muted" style="font-size:var(--font-size-sm)">Add, edit, and remove products</div>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="margin-left:auto;color:var(--text-muted)"></i>
+              </a>
+              <a href="/admin/orders" class="card card-body"
+                style="text-decoration:none;color:inherit;transition:all var(--transition-fast);display:flex;align-items:center;gap:var(--space-4)"
+                onmouseover="this.style.borderColor='var(--primary)'"
+                onmouseout="this.style.borderColor='var(--border)'">
+                <div class="stat-icon" style="margin-bottom:0;flex-shrink:0"><i class="fa-solid fa-receipt"
+                    style="color:var(--primary)"></i></div>
+                <div>
+                  <div style="font-weight:var(--font-weight-semibold)">View Orders</div>
+                  <div class="text-muted" style="font-size:var(--font-size-sm)">Check and update order status</div>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="margin-left:auto;color:var(--text-muted)"></i>
+              </a>
+              <a href="/admin/categories" class="card card-body"
+                style="text-decoration:none;color:inherit;transition:all var(--transition-fast);display:flex;align-items:center;gap:var(--space-4)"
+                onmouseover="this.style.borderColor='var(--primary)'"
+                onmouseout="this.style.borderColor='var(--border)'">
+                <div class="stat-icon" style="margin-bottom:0;flex-shrink:0"><i class="fa-solid fa-tags"
+                    style="color:var(--primary)"></i></div>
+                <div>
+                  <div style="font-weight:var(--font-weight-semibold)">Manage Categories</div>
+                  <div class="text-muted" style="font-size:var(--font-size-sm)">Organise your product groups</div>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="margin-left:auto;color:var(--text-muted)"></i>
+              </a>
+              <a href="/admin/settings" class="card card-body"
+                style="text-decoration:none;color:inherit;transition:all var(--transition-fast);display:flex;align-items:center;gap:var(--space-4)"
+                onmouseover="this.style.borderColor='var(--primary)'"
+                onmouseout="this.style.borderColor='var(--border)'">
+                <div class="stat-icon" style="margin-bottom:0;flex-shrink:0"><i class="fa-solid fa-gear"
+                    style="color:var(--primary)"></i></div>
+                <div>
+                  <div style="font-weight:var(--font-weight-semibold)">Site Settings</div>
+                  <div class="text-muted" style="font-size:var(--font-size-sm)">Update title, colours, branding</div>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="margin-left:auto;color:var(--text-muted)"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-clock-rotate-left" style="color:var(--primary);margin-right:.4rem"></i>Recent
+              Orders</h2>
+            <a href="/admin/orders" class="btn btn-secondary btn-sm">View All <i
+                class="fa-solid fa-arrow-right"></i></a>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Customer</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="recent-orders">
+                <tr>
+                  <td colspan="5" style="text-align:center;padding:2rem">
+                    <div class="spinner"></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    requireAdmin().then(user => {
+      if (!user) return;
+      const initials = (user.name || user.email || "A").charAt(0).toUpperCase();
+      document.getElementById("sidebar-avatar").textContent = initials;
+      document.getElementById("sidebar-username").textContent = user.name || user.email;
+    });
+
+    Promise.all([
+      api.get("/api/products"),
+      api.get("/api/categories"),
+      api.get("/api/orders"),
+    ]).then(([products, cats, orders]) => {
+      document.getElementById("stat-products").textContent = products.length;
+      document.getElementById("stat-categories").textContent = cats.length;
+      document.getElementById("stat-orders").textContent = orders.length;
+
+      const revenue = orders.reduce((s, o) => s + parseFloat(o.total_amount || 0), 0);
+      document.getElementById("stat-revenue").innerHTML = `<i class="fa-solid fa-naira-sign" style="color:var(--success)"></i> ${formatPrice(revenue)} revenue`;
+
+      const tbody = document.getElementById("recent-orders");
+      if (!orders.length) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:2rem"><i class="fa-solid fa-inbox"></i> No orders yet</td></tr>`;
+      } else {
+        tbody.innerHTML = orders.slice(0, 10).map(o => `
+      <tr>
+        <td><a href="/admin/orders" style="font-weight:600;color:var(--primary)">#${safe(o.order_number || String(o.id))}</a></td>
+        <td>${safe(o.customer_name)}</td>
+        <td style="font-weight:600">${formatPrice(o.total_amount)}</td>
+        <td><span class="badge badge-${safe(o.status)}">${safe(o.status)}</span></td>
+        <td style="color:var(--text-muted)">${formatDate(o.created_at)}</td>
+      </tr>`).join("");
+      }
+    }).catch(err => { console.error(err); });
+  </script>
+</body>
+
+</html>

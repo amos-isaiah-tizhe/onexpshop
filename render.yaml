@@ -1,0 +1,33 @@
+# Render Blueprint — one-click deploy for OneXpShop
+# Docs: https://render.com/docs/blueprint-spec
+#
+# This provisions:
+#   * a Node web service running `npm start`
+#   * a 1 GB persistent disk mounted at /var/data so the SQLite file
+#     and uploaded images survive deploys & restarts
+#   * an auto-generated SESSION_SECRET (Render fills it in once)
+#
+services:
+  - type: web
+    name: onexpshop
+    runtime: node
+    plan: free                 # upgrade to "starter" for always-on + more RAM
+    region: oregon             # change if you prefer fra/sgp
+    branch: main
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true    # Render generates a strong random value once
+      - key: DB_PATH
+        value: /var/data/shop.db
+      - key: UPLOADS_DIR
+        value: /var/data/uploads
+    disk:
+      name: onexp-data
+      mountPath: /var/data
+      sizeGB: 1

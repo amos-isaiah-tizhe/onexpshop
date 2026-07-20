@@ -1,0 +1,22 @@
+{
+  "name": "onexpshop",
+  "version": "2.2.0",
+  "description": "OneXpShop – Production-ready e-commerce platform by Amos Isaiah Tizhe",
+  "main": "server/index.js",
+  "engines": { "node": ">=18.0.0" },
+  "scripts": {
+    "start": "node -r dotenv/config server/index.js",
+    "dev":   "node -r dotenv/config --watch server/index.js"
+  },
+  "dependencies": {
+    "bcryptjs":           "^2.4.3",
+    "cors":               "^2.8.5",
+    "dotenv":             "^16.4.5",
+    "express":            "^4.18.2",
+    "express-rate-limit": "^7.4.1",
+    "express-session":    "^1.17.3",
+    "helmet":             "^8.0.0",
+    "multer":             "^2.0.0",
+    "sql.js":             "^1.12.0"
+  }
+}

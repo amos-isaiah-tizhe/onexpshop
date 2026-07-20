@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <script>(function(){var t=localStorage.getItem("onexp_theme")||(window.matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t);})()</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <title>Checkout – OneXpShop</title>
+  <link rel="icon" href="/uploads/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/design-system.css">
+
+  <!-- Paystack inline JS — loaded from their CDN -->
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+
+  <style>
+    /* Payment method selector */
+    .payment-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+    }
+
+    .payment-option {
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      text-align: center;
+      background: var(--surface);
+      position: relative;
+    }
+
+    .payment-option:hover {
+      border-color: var(--primary);
+      background: var(--primary-subtle);
+    }
+
+    .payment-option.selected {
+      border-color: var(--primary);
+      background: var(--primary-subtle);
+    }
+
+    .payment-option.selected::after {
+      content: '\f00c';
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      position: absolute;
+      top: .5rem;
+      right: .75rem;
+      color: var(--primary);
+      font-size: var(--font-size-sm);
+    }
+
+    .payment-option__icon {
+      font-size: 1.75rem;
+      color: var(--primary);
+    }
+
+    .payment-option__label {
+      font-family: var(--font-display);
+      font-weight: var(--font-weight-semibold);
+      font-size: var(--font-size-sm);
+      color: var(--text-primary);
+    }
+
+    .payment-option__desc {
+      font-size: var(--font-size-xs);
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 480px) {
+      .payment-options { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="logo">
+      <span class="logo-icon"><img src="/uploads/favicon.png" alt="OneXpShop logo"></span>
+      OneXp<span class="logo-accent">Shop</span>
+    </a>
+    <div class="header-actions">
+      <button id="theme-toggle" class="theme-toggle" data-action="toggle-theme" aria-label="Toggle dark mode">
+        <i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i>
+      </button>
+      <a href="/cart" class="cart-btn">
+        <i class="fa-solid fa-bag-shopping"></i> Cart
+        <span class="cart-badge">0</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- Progress -->
+<div style="background:var(--surface);border-bottom:1px solid var(--border);padding:var(--space-3) 0">
+  <div class="container">
+    <div style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--font-size-sm)">
+      <span style="color:var(--text-muted)"><i class="fa-solid fa-bag-shopping"></i> Cart</span>
+      <i class="fa-solid fa-chevron-right" style="font-size:.6rem;color:var(--border-strong)"></i>
+      <span style="color:var(--primary);font-weight:var(--font-weight-semibold)"><i class="fa-solid fa-file-lines"></i> Checkout</span>
+      <i class="fa-solid fa-chevron-right" style="font-size:.6rem;color:var(--border-strong)"></i>
+      <span style="color:var(--text-muted)"><i class="fa-solid fa-circle-check"></i> Confirmation</span>
+    </div>
+  </div>
+</div>
+
+<div class="container" style="padding-top:var(--space-7);padding-bottom:var(--space-10)">
+
+  <!-- Empty cart state -->
+  <div id="empty-redirect" class="empty-state" style="display:none">
+    <div class="empty-icon"><i class="fa-solid fa-bag-shopping"></i></div>
+    <h3>Your cart is empty</h3>
+    <a href="/shop" class="btn btn-primary" style="margin-top:var(--space-4)">
+      <i class="fa-solid fa-store"></i> Back to Shop
+    </a>
+  </div>
+
+  <!-- Checkout layout -->
+  <div id="checkout-form" class="checkout-layout">
+
+    <!-- Left: Shipping + Payment -->
+    <div style="display:flex;flex-direction:column;gap:var(--space-5)">
+
+      <!-- Shipping info -->
+      <div class="card card-body">
+        <h2 class="checkout-section-title">
+          <i class="fa-solid fa-location-dot" style="color:var(--primary);margin-right:.5rem"></i>Shipping Information
+        </h2>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)">
+          <div class="form-group" style="margin-bottom:0">
+            <label for="first-name"><i class="fa-solid fa-user"></i> First Name *</label>
+            <input id="first-name" class="form-control" placeholder="John" autocomplete="given-name" required>
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label for="last-name">Last Name *</label>
+            <input id="last-name" class="form-control" placeholder="Doe" autocomplete="family-name" required>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top:var(--space-4)">
+          <label for="email"><i class="fa-solid fa-envelope"></i> Email Address *</label>
+          <input id="email" type="email" class="form-control" placeholder="john@example.com" autocomplete="email" required>
+        </div>
+        <div class="form-group">
+          <label for="phone"><i class="fa-solid fa-phone"></i> Phone Number</label>
+          <input id="phone" type="tel" class="form-control" placeholder="+234 800 000 0000" autocomplete="tel">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label for="address"><i class="fa-solid fa-map-pin"></i> Delivery Address *</label>
+          <textarea id="address" class="form-control" rows="3"
+            placeholder="House number, street, city, state" autocomplete="street-address" required></textarea>
+        </div>
+      </div>
+
+      <!-- Payment method -->
+      <div class="card card-body">
+        <h2 class="checkout-section-title">
+          <i class="fa-solid fa-credit-card" style="color:var(--primary);margin-right:.5rem"></i>Payment Method
+        </h2>
+
+        <div class="payment-options">
+          <div class="payment-option selected" data-method="paystack" id="opt-paystack">
+            <div class="payment-option__icon"><i class="fa-solid fa-credit-card"></i></div>
+            <div class="payment-option__label">Pay with Card</div>
+            <div class="payment-option__desc">Debit / Credit card via Paystack</div>
+          </div>
+          <div class="payment-option" data-method="whatsapp" id="opt-whatsapp">
+            <div class="payment-option__icon"><i class="fa-brands fa-whatsapp"></i></div>
+            <div class="payment-option__label">Pay via WhatsApp</div>
+            <div class="payment-option__desc">Send order details & pay manually</div>
+          </div>
+        </div>
+
+        <!-- Error box -->
+        <div id="error-msg"
+          style="display:none;background:#fff1f0;color:var(--error);padding:var(--space-3) var(--space-4);border-radius:var(--radius-md);font-size:var(--font-size-sm);margin-bottom:var(--space-4);border:1px solid #fecaca">
+          <i class="fa-solid fa-triangle-exclamation"></i> <span id="error-text"></span>
+        </div>
+
+        <!-- CTA button — label changes based on selected method -->
+        <button id="place-order-btn" class="btn btn-primary btn-full btn-lg">
+          <i class="fa-solid fa-lock"></i> <span id="btn-label">Pay with Card</span>
+        </button>
+
+        <div style="display:flex;align-items:center;justify-content:center;gap:.4rem;margin-top:var(--space-3);font-size:var(--font-size-xs);color:var(--text-muted)">
+          <i class="fa-solid fa-shield-halved"></i> Your information is encrypted and secure
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Order summary -->
+    <div>
+      <div class="card card-body" style="position:sticky;top:calc(var(--header-height) + 1rem)">
+        <h2 style="font-family:var(--font-display);font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);margin-bottom:var(--space-4)">
+          <i class="fa-solid fa-receipt" style="color:var(--primary);margin-right:.4rem"></i>Your Order
+        </h2>
+        <div id="order-items" style="display:flex;flex-direction:column;gap:var(--space-2)"></div>
+        <div class="summary-row" style="margin-top:var(--space-3)">
+          <span>Shipping</span>
+          <span style="color:var(--success);font-weight:600"><i class="fa-solid fa-truck-fast"></i> Free</span>
+        </div>
+        <div class="summary-total">
+          <span>Total</span>
+          <span id="order-total">₦0.00</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end checkout-layout -->
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+// ── Cart check ────────────────────────────────────────────────
+const items = cart.get();
+
+if (!items.length) {
+  document.getElementById("checkout-form").style.display = "none";
+  document.getElementById("empty-redirect").style.display = "flex";
+} else {
+  document.getElementById("order-items").innerHTML = items.map(item => `
+    <div class="summary-row" style="align-items:flex-start">
+      <span style="flex:1">${safe(item.productName)}
+        <span style="color:var(--text-muted)">× ${safe(String(item.quantity))}</span>
+      </span>
+      <span style="font-weight:600">${formatPrice(parseFloat(item.price) * item.quantity)}</span>
+    </div>
+  `).join("");
+  document.getElementById("order-total").textContent = formatPrice(cart.total());
+}
+
+// ── Payment method selection ──────────────────────────────────
+let selectedMethod = "paystack";
+
+const BTN_LABELS = {
+  paystack:  '<i class="fa-solid fa-lock"></i> Pay with Card',
+  whatsapp:  '<i class="fa-brands fa-whatsapp"></i> Send Order via WhatsApp',
+};
+
+document.querySelectorAll(".payment-option").forEach(opt => {
+  opt.addEventListener("click", function () {
+    document.querySelectorAll(".payment-option").forEach(o => o.classList.remove("selected"));
+    this.classList.add("selected");
+    selectedMethod = this.dataset.method;
+    document.getElementById("btn-label").innerHTML = BTN_LABELS[selectedMethod];
+  });
+});
+
+// ── Helpers ───────────────────────────────────────────────────
+function showError(msg) {
+  document.getElementById("error-text").textContent = msg;
+  document.getElementById("error-msg").style.display = "";
+}
+function hideError() {
+  document.getElementById("error-msg").style.display = "none";
+}
+
+function collectForm() {
+  const firstName = document.getElementById("first-name").value.trim();
+  const lastName  = document.getElementById("last-name").value.trim();
+  const email     = document.getElementById("email").value.trim();
+  const phone     = document.getElementById("phone").value.trim();
+  const address   = document.getElementById("address").value.trim();
+  return { firstName, lastName, email, phone, address };
+}
+
+function validateForm({ firstName, lastName, email, address }) {
+  if (!firstName || !lastName) { showError("Please enter your full name."); return false; }
+  if (!validate.email(email))  { showError("Please enter a valid email address."); return false; }
+  if (!address)                { showError("Please enter your delivery address."); return false; }
+  return true;
+}
+
+function setBtnLoading(msg) {
+  const btn = document.getElementById("place-order-btn");
+  btn.disabled = true;
+  btn.innerHTML = `<div class="spinner" style="margin:auto"></div> ${msg}`;
+}
+
+function resetBtn() {
+  const btn = document.getElementById("place-order-btn");
+  btn.disabled = false;
+  btn.innerHTML = BTN_LABELS[selectedMethod];
+}
+
+// ── Place order (creates DB record, returns order id + number) ─
+async function createOrderRecord(method) {
+  const { firstName, lastName, email, phone, address } = collectForm();
+  return api.post("/api/orders", {
+    customer_name:    `${firstName} ${lastName}`,
+    customer_email:   email,
+    customer_phone:   phone,
+    shipping_address: address,
+    items:            cart.get(),
+    total_amount:     cart.total(),
+    payment_method:   method,
+  });
+}
+
+// ── PAYSTACK FLOW ─────────────────────────────────────────────
+async function handlePaystack() {
+  setBtnLoading("Preparing payment…");
+
+  let order;
+  try {
+    order = await createOrderRecord("paystack");
+  } catch (err) {
+    showError(err.message || "Could not create order. Please try again.");
+    resetBtn();
+    return;
+  }
+
+  const { email } = collectForm();
+  const amountKobo = Math.round(cart.total() * 100); // Paystack uses kobo
+
+  const PAYSTACK_KEY = window.__PAYSTACK_KEY__;
+  if (!PAYSTACK_KEY) {
+    showError("Paystack is not configured. Please contact support.");
+    resetBtn();
+    return;
+  }
+
+  const handler = PaystackPop.setup({
+    key:       PAYSTACK_KEY,
+    email:     email,
+    amount:    amountKobo,
+    currency:  "NGN",
+    ref:       `${order.order_number}-${Date.now()}`,
+    metadata:  { order_id: order.id, order_number: order.order_number },
+
+    callback: async function (response) {
+      // Payment done on Paystack's side — now verify server-side
+      setBtnLoading("Verifying payment…");
+      try {
+        await api.post(`/api/orders/${order.id}/verify-payment`, {
+          reference: response.reference,
+        });
+        cart.clear();
+        window.location.href = `/thank-you?order=${encodeURIComponent(order.order_number)}&method=paystack`;
+      } catch (err) {
+        showError(err.message || "Payment verification failed. Contact support with ref: " + response.reference);
+        resetBtn();
+      }
+    },
+
+    onClose: function () {
+      // User closed the popup without paying
+      showError("Payment cancelled. Your order has been saved — you can try again.");
+      resetBtn();
+    },
+  });
+
+  handler.openIframe();
+}
+
+// ── WHATSAPP FLOW ─────────────────────────────────────────────
+async function handleWhatsapp() {
+  setBtnLoading("Preparing order…");
+
+  let order;
+  try {
+    order = await createOrderRecord("whatsapp");
+  } catch (err) {
+    showError(err.message || "Could not create order. Please try again.");
+    resetBtn();
+    return;
+  }
+
+  const { firstName, lastName, phone, address } = collectForm();
+  const orderItems = cart.get();
+
+  // Build the WhatsApp message
+  const lines = [
+    `🛍️ *New Order – OneXpShop*`,
+    ``,
+    `*Order Number:* ${order.order_number}`,
+    `*Customer:* ${firstName} ${lastName}`,
+    `*Phone:* ${phone || "—"}`,
+    `*Address:* ${address}`,
+    ``,
+    `*Items:*`,
+    ...orderItems.map(i => `  • ${i.productName} × ${i.quantity} — ${formatPrice(parseFloat(i.price) * i.quantity)}`),
+    ``,
+    `*Total: ${formatPrice(cart.total())}*`,
+    ``,
+    `Please confirm this order and provide payment details. Thank you!`,
+  ];
+
+  const message = lines.join("\n");
+  const waNumber = window.__WA_NUMBER__;
+
+  if (!waNumber) {
+    showError("WhatsApp number not configured. Please contact support.");
+    resetBtn();
+    return;
+  }
+
+  cart.clear();
+
+  // Store URL in sessionStorage so thank-you page can offer resend
+  const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
+  sessionStorage.setItem("onexp_wa_url", waUrl);
+
+  // Open WhatsApp in a new tab
+  window.open(waUrl, "_blank", "noopener,noreferrer");
+
+  // Redirect to thank-you
+  window.location.href = `/thank-you?order=${encodeURIComponent(order.order_number)}&method=whatsapp`;
+}
+
+// ── Main handler ──────────────────────────────────────────────
+async function placeOrder() {
+  hideError();
+  const form = collectForm();
+  if (!validateForm(form)) return;
+
+  if (selectedMethod === "paystack") {
+    await handlePaystack();
+  } else {
+    await handleWhatsapp();
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("place-order-btn")?.addEventListener("click", placeOrder);
+});
+</script>
+</body>
+</html>

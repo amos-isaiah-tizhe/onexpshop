@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <script>(function () { var t = localStorage.getItem("onexp_theme") || (window.matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light"); document.documentElement.setAttribute("data-theme", t); })()</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <title>Orders – Admin · OneXpShop</title>
+  <link rel="icon" href="/uploads/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/design-system.css">
+</head>
+
+<body>
+  <div class="admin-layout">
+
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img src="/uploads/favicon.png" alt="OneXpShop logo" class="sidebar-logo-img">
+          <span>OneXpShop</span>
+        </div>
+        <div class="sidebar-subtitle">OneXpShop Control</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/admin"><i class="fa-solid fa-chart-line nav-icon"></i> Dashboard</a>
+        <a href="/admin/products"><i class="fa-solid fa-box nav-icon"></i> Products</a>
+        <a href="/admin/categories"><i class="fa-solid fa-tags nav-icon"></i> Categories</a>
+        <a href="/admin/orders" class="active"><i class="fa-solid fa-receipt nav-icon"></i> Orders</a>
+        <a href="/admin/settings"><i class="fa-solid fa-gear nav-icon"></i> Settings</a>
+        <div class="sidebar-divider"></div>
+        <a href="/"><i class="fa-solid fa-arrow-left nav-icon"></i> View Store</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar" id="sidebar-avatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-username" id="sidebar-username">Admin</div>
+            <div class="sidebar-user-role">Administrator</div>
+          </div>
+        </div>
+        <button type="button" class="sidebar-logout" data-action="logout"><i class="fa-solid fa-right-from-bracket"></i>
+          Sign out</button>
+      </div>
+    </aside>
+
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div style="display:flex;align-items:center;gap:var(--space-3)">
+          <button id="sidebar-toggle" class="mobile-menu-btn" data-action="toggle-sidebar" style="display:flex"
+            aria-label="Toggle sidebar"><span></span><span></span><span></span></button>
+          <h1 class="admin-topbar-title"><i class="fa-solid fa-receipt"
+              style="color:var(--primary);margin-right:.4rem"></i>Orders</h1>
+        </div>
+        <div style="display:flex;gap:var(--space-2);align-items:center">
+          <button id="theme-toggle" class="theme-toggle" data-action="toggle-theme" aria-label="Toggle dark mode">
+            <i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="admin-content">
+
+        <!-- Filters -->
+        <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-4);flex-wrap:wrap;align-items:center">
+          <div style="position:relative;flex:1;min-width:200px">
+            <i class="fa-solid fa-magnifying-glass"
+              style="position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:.85rem"></i>
+            <input id="search-orders" class="form-control" placeholder="Search by name or order #…"
+              style="padding-left:2.25rem" data-action-input="filter-orders">
+          </div>
+          <select id="status-filter" class="form-control" style="width:auto;min-width:160px"
+            data-action-change="filter-orders">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="processing">Processing</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+
+        <div class="orders-layout">
+          <!-- Orders table -->
+          <div class="card">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Order #</th>
+                    <th>Customer</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th style="text-align:right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="orders-tbody">
+                  <tr>
+                    <td colspan="6" style="text-align:center;padding:2rem">
+                      <div class="spinner"></div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Order detail panel -->
+          <div id="order-detail-panel" class="card"
+            style="display:none;position:sticky;top:calc(var(--header-height) + 1rem)">
+            <div class="card-header">
+              <h3 id="detail-title" style="font-size:var(--font-size-md)"><i class="fa-solid fa-file-lines"
+                  style="color:var(--primary);margin-right:.4rem"></i>Order Detail</h3>
+              <button id="close-detail-btn"
+                style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:1rem"><i
+                  class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="card-body" id="detail-body" style="font-size:var(--font-size-sm)"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    let allOrders = [], selectedOrderId = null;
+
+    requireAdmin().then(user => {
+      if (!user) return;
+      document.getElementById("sidebar-avatar").textContent = (user.name || user.email || "A").charAt(0).toUpperCase();
+      document.getElementById("sidebar-username").textContent = user.name || user.email;
+      loadOrders();
+    });
+
+    async function loadOrders() {
+      allOrders = await api.get("/api/orders");
+      renderTable(allOrders);
+    }
+
+    function filterOrders() {
+      const q = document.getElementById("search-orders").value.toLowerCase();
+      const status = document.getElementById("status-filter").value;
+      let filtered = allOrders;
+      if (q) filtered = filtered.filter(o => o.customer_name?.toLowerCase().includes(q) || String(o.order_number || o.id).includes(q));
+      if (status) filtered = filtered.filter(o => o.status === status);
+      renderTable(filtered);
+    }
+
+    function renderTable(orders) {
+      const tbody = document.getElementById("orders-tbody");
+      if (!orders.length) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted)"><i class="fa-solid fa-inbox"></i> No orders found</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = orders.map(o => `
+    <tr style="cursor:pointer;${selectedOrderId === o.id ? 'background:var(--primary-subtle)' : ''}" data-action="order-view" data-val="${o.id}">
+      <td style="font-weight:600;color:var(--primary)">#${safe(o.order_number || String(o.id))}</td>
+      <td>
+        <div style="font-weight:var(--font-weight-medium)">${safe(o.customer_name)}</div>
+        <div style="font-size:.75rem;color:var(--text-muted)">${safe(o.customer_email || "")}</div>
+      </td>
+      <td style="font-weight:600">${formatPrice(o.total_amount)}</td>
+      <td><span class="badge badge-${safe(o.status)}">${safe(o.status)}</span></td>
+      <td style="color:var(--text-muted);font-size:var(--font-size-sm)">${formatDate(o.created_at)}</td>
+      <td style="text-align:right">
+        <select class="form-control" style="width:auto;font-size:var(--font-size-xs);padding:.3rem .5rem"
+          data-stop="1" data-action="noop"
+          data-action-change="order-status" data-val="${o.id}">
+          ${['pending', 'processing', 'completed', 'cancelled'].map(s =>
+        `<option value="${s}" ${o.status === s ? 'selected' : ''}>${s.charAt(0).toUpperCase() + s.slice(1)}</option>`
+      ).join('')}
+        </select>
+      </td>
+    </tr>`).join("");
+    }
+
+    function viewDetail(id) {
+      selectedOrderId = id;
+      const o = allOrders.find(x => x.id === id);
+      if (!o) return;
+
+      // Parse items safely
+      let items = [];
+      try { items = typeof o.items === 'string' ? JSON.parse(o.items) : (o.items || []); } catch { }
+
+      document.getElementById("detail-title").innerHTML = `<i class="fa-solid fa-file-lines" style="color:var(--primary);margin-right:.4rem"></i>Order #${safe(o.order_number || String(o.id))}`;
+      document.getElementById("detail-body").innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:var(--space-4)">
+
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <span class="badge badge-${safe(o.status)}" style="font-size:.8rem">${safe(o.status)}</span>
+        <span style="font-size:.75rem;color:var(--text-muted)">${formatDate(o.created_at)}</span>
+      </div>
+
+      <div style="background:var(--surface-secondary);border-radius:var(--radius-md);padding:var(--space-3)">
+        <div style="font-weight:var(--font-weight-semibold);margin-bottom:var(--space-2);color:var(--text-muted);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em">
+          <i class="fa-solid fa-user"></i> Customer
+        </div>
+        <div style="font-weight:600">${safe(o.customer_name)}</div>
+        ${o.customer_email ? `<div style="color:var(--text-muted);font-size:.8rem"><i class="fa-solid fa-envelope"></i> ${safe(o.customer_email)}</div>` : ''}
+        ${o.customer_phone ? `<div style="color:var(--text-muted);font-size:.8rem"><i class="fa-solid fa-phone"></i> ${safe(o.customer_phone)}</div>` : ''}
+      </div>
+
+      ${o.shipping_address ? `
+      <div style="background:var(--surface-secondary);border-radius:var(--radius-md);padding:var(--space-3)">
+        <div style="font-weight:var(--font-weight-semibold);margin-bottom:var(--space-2);color:var(--text-muted);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em">
+          <i class="fa-solid fa-location-dot"></i> Shipping Address
+        </div>
+        <div style="color:var(--text-secondary)">${safe(o.shipping_address)}</div>
+      </div>` : ''}
+
+      <div>
+        <div style="font-weight:var(--font-weight-semibold);margin-bottom:var(--space-2);color:var(--text-muted);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em">
+          <i class="fa-solid fa-box"></i> Items
+        </div>
+        ${items.length ? items.map(item => `
+          <div style="display:flex;justify-content:space-between;padding:var(--space-2) 0;border-bottom:1px solid var(--border)">
+            <span>${safe(item.productName || item.name || 'Product')} <span style="color:var(--text-muted)">× ${safe(String(item.quantity || 1))}</span></span>
+            <span style="font-weight:600">${formatPrice((parseFloat(item.price) || 0) * (item.quantity || 1))}</span>
+          </div>`).join('') : '<p style="color:var(--text-muted)">No items data</p>'}
+      </div>
+
+      <div style="border-top:2px solid var(--border);padding-top:var(--space-3);display:flex;justify-content:space-between;font-family:var(--font-display);font-weight:700;font-size:var(--font-size-md)">
+        <span>Total</span>
+        <span style="color:var(--primary)">${formatPrice(o.total_amount)}</span>
+      </div>
+
+      <div>
+        <label style="font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:.4rem;display:block">
+          <i class="fa-solid fa-arrows-rotate"></i> Update Status
+        </label>
+        <div style="display:flex;gap:.5rem">
+          ${['pending', 'processing', 'completed', 'cancelled'].map(s => `
+            <button data-action="order-status-btn" data-val="${o.id}" data-status="${s}"
+              class="btn btn-sm ${o.status === s ? 'btn-primary' : 'btn-secondary'}"
+              style="flex:1;font-size:.7rem;padding:.35rem .4rem">
+              ${s.charAt(0).toUpperCase() + s.slice(1)}
+            </button>`).join('')}
+        </div>
+      </div>
+    </div>`;
+
+      document.getElementById("order-detail-panel").style.display = "block";
+      renderTable(allOrders); // re-render to highlight selected row
+    }
+
+    function closeDetail() {
+      selectedOrderId = null;
+      document.getElementById("order-detail-panel").style.display = "none";
+      renderTable(allOrders);
+    }
+
+    async function updateStatus(id, status) {
+      try {
+        await api.patch(`/api/orders/${id}/status`, { status });
+        const order = allOrders.find(o => o.id === id);
+        if (order) order.status = status;
+        toast.success(`Order marked as ${status}`);
+        renderTable(allOrders);
+        if (selectedOrderId === id) viewDetail(id);
+      } catch (err) { toast.error(err.message || "Update failed."); }
+    }
+
+    registerActions({
+      "filter-orders": () => filterOrders(),
+      "order-view": (val) => viewDetail(+val),
+      "order-status": (val, el) => updateStatus(+el.dataset.val, el.value),
+      "order-status-btn": (val, el) => updateStatus(+val, el.dataset.status),
+    });
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var closeBtn = document.getElementById("close-detail-btn");
+      if (closeBtn) closeBtn.addEventListener("click", closeDetail);
+    });
+
+  </script>
+</body>
+
+</html>

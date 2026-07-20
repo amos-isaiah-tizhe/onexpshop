@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <script>(function () { var t = localStorage.getItem("onexp_theme") || (window.matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light"); document.documentElement.setAttribute("data-theme", t); })()</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <title>Settings – Admin · OneXpShop</title>
+  <link rel="icon" href="/uploads/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/design-system.css">
+</head>
+
+<body>
+  <div class="admin-layout">
+
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img src="/uploads/favicon.png" alt="OneXpShop logo" class="sidebar-logo-img">
+          <span>OneXpShop</span>
+        </div>
+        <div class="sidebar-subtitle">OneXpShop Control</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/admin"><i class="fa-solid fa-chart-line nav-icon"></i> Dashboard</a>
+        <a href="/admin/products"><i class="fa-solid fa-box nav-icon"></i> Products</a>
+        <a href="/admin/categories"><i class="fa-solid fa-tags nav-icon"></i> Categories</a>
+        <a href="/admin/orders"><i class="fa-solid fa-receipt nav-icon"></i> Orders</a>
+        <a href="/admin/settings" class="active"><i class="fa-solid fa-gear nav-icon"></i> Settings</a>
+        <div class="sidebar-divider"></div>
+        <a href="/"><i class="fa-solid fa-arrow-left nav-icon"></i> View Store</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar" id="sidebar-avatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-username" id="sidebar-username">Admin</div>
+            <div class="sidebar-user-role">Administrator</div>
+          </div>
+        </div>
+        <button type="button" class="sidebar-logout" data-action="logout"><i class="fa-solid fa-right-from-bracket"></i>
+          Sign out</button>
+      </div>
+    </aside>
+
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div style="display:flex;align-items:center;gap:var(--space-3)">
+          <button id="sidebar-toggle" class="mobile-menu-btn" data-action="toggle-sidebar" style="display:flex"
+            aria-label="Toggle sidebar"><span></span><span></span><span></span></button>
+          <h1 class="admin-topbar-title"><i class="fa-solid fa-gear"
+              style="color:var(--primary);margin-right:.4rem"></i>Site Settings</h1>
+        </div>
+        <div style="display:flex;gap:var(--space-2);align-items:center">
+          <button id="theme-toggle" class="theme-toggle" data-action="toggle-theme" aria-label="Toggle dark mode">
+            <i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="admin-content">
+        <div id="settings-loading" class="loading-state">
+          <div class="spinner spinner-lg"></div>
+          <p>Loading settings…</p>
+        </div>
+
+        <div id="settings-content" style="display:none">
+          <div class="settings-grid">
+
+            <!-- Branding -->
+            <div class="card card-body">
+              <h2
+                style="font-family:var(--font-display);font-size:var(--font-size-md);font-weight:var(--font-weight-bold);margin-bottom:var(--space-5);display:flex;align-items:center;gap:.5rem">
+                <i class="fa-solid fa-palette" style="color:var(--primary)"></i> Branding
+              </h2>
+              <div class="form-group">
+                <label for="site-title"><i class="fa-solid fa-store"></i> Store Name</label>
+                <input id="site-title" class="form-control" placeholder="OneXpShop" maxlength="100">
+              </div>
+              <div class="form-group">
+                <label for="site-desc"><i class="fa-solid fa-align-left"></i> Store Description</label>
+                <textarea id="site-desc" class="form-control" rows="3"
+                  placeholder="A short tagline shown on your homepage" maxlength="300"></textarea>
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label for="primary-color"><i class="fa-solid fa-droplet"></i> Brand Colour</label>
+                <div style="display:flex;gap:var(--space-3);align-items:center">
+                  <input type="color" id="primary-color" value="#8063cc"
+                    style="width:48px;height:38px;border:1.5px solid var(--border);border-radius:var(--radius-md);cursor:pointer;padding:2px;background:var(--surface)">
+                  <input id="primary-color-hex" class="form-control" placeholder="#8063cc" maxlength="7" style="flex:1"
+                    data-action-input="sync-hex">
+                </div>
+                <p class="form-hint">Applied across buttons, links, and accents sitewide.</p>
+              </div>
+            </div>
+
+            <!-- Content -->
+            <div class="card card-body">
+              <h2
+                style="font-family:var(--font-display);font-size:var(--font-size-md);font-weight:var(--font-weight-bold);margin-bottom:var(--space-5);display:flex;align-items:center;gap:.5rem">
+                <i class="fa-solid fa-file-lines" style="color:var(--primary)"></i> Content
+              </h2>
+              <div class="form-group">
+                <label for="header-text"><i class="fa-solid fa-heading"></i> Homepage Headline</label>
+                <input id="header-text" class="form-control" placeholder="Discover Products You'll Love"
+                  maxlength="100">
+              </div>
+              <div class="form-group">
+                <label for="footer-text"><i class="fa-solid fa-align-center"></i> Footer Text</label>
+                <input id="footer-text" class="form-control" placeholder="© 2025 OneXpShop" maxlength="200">
+              </div>
+            </div>
+
+            <!-- Account Security -->
+            <div class="card card-body">
+              <h2
+                style="font-family:var(--font-display);font-size:var(--font-size-md);font-weight:var(--font-weight-bold);margin-bottom:var(--space-5);display:flex;align-items:center;gap:.5rem">
+                <i class="fa-solid fa-lock" style="color:var(--primary)"></i> Change Password
+              </h2>
+              <div class="form-group">
+                <label for="current-pass"><i class="fa-solid fa-lock"></i> Current Password</label>
+                <input id="current-pass" type="password" class="form-control" placeholder="••••••••"
+                  autocomplete="current-password">
+              </div>
+              <div class="form-group">
+                <label for="new-pass"><i class="fa-solid fa-key"></i> New Password</label>
+                <input id="new-pass" type="password" class="form-control" placeholder="Min. 8 characters"
+                  autocomplete="new-password">
+                <p class="form-hint">Must be at least 8 characters long.</p>
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label for="confirm-pass"><i class="fa-solid fa-key"></i> Confirm New Password</label>
+                <input id="confirm-pass" type="password" class="form-control" placeholder="••••••••"
+                  autocomplete="new-password">
+              </div>
+              <button class="btn btn-secondary" style="margin-top:var(--space-4);width:100%" id="change-pass-btn">
+                <i class="fa-solid fa-floppy-disk"></i> Update Password
+              </button>
+            </div>
+
+            <!-- Store Features -->
+            <div class="card card-body">
+              <h2
+                style="font-family:var(--font-display);font-size:var(--font-size-md);font-weight:var(--font-weight-bold);margin-bottom:var(--space-5);display:flex;align-items:center;gap:.5rem">
+                <i class="fa-solid fa-sliders" style="color:var(--primary)"></i> Store Options
+              </h2>
+              <div style="display:flex;flex-direction:column;gap:var(--space-4)">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <div>
+                    <div style="font-weight:var(--font-weight-semibold);font-size:var(--font-size-sm)">Guest Checkout
+                    </div>
+                    <div style="font-size:var(--font-size-xs);color:var(--text-muted)">Allow orders without account
+                    </div>
+                  </div>
+                  <label class="toggle" style="gap:0">
+                    <input type="checkbox" id="guest-checkout" checked>
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div style="height:1px;background:var(--border)"></div>
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <div>
+                    <div style="font-weight:var(--font-weight-semibold);font-size:var(--font-size-sm)">Show Out-of-Stock
+                      Products</div>
+                    <div style="font-size:var(--font-size-xs);color:var(--text-muted)">Display but disable out-of-stock
+                      items</div>
+                  </div>
+                  <label class="toggle" style="gap:0">
+                    <input type="checkbox" id="show-out-of-stock" checked>
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div style="height:1px;background:var(--border)"></div>
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <div>
+                    <div style="font-weight:var(--font-weight-semibold);font-size:var(--font-size-sm)">Maintenance Mode
+                    </div>
+                    <div style="font-size:var(--font-size-xs);color:var(--text-muted)">Show a maintenance page to
+                      visitors</div>
+                  </div>
+                  <label class="toggle" style="gap:0">
+                    <input type="checkbox" id="maintenance-mode">
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Save button -->
+          <div style="display:flex;justify-content:flex-end;margin-top:var(--space-5)">
+            <button class="btn btn-primary btn-lg" id="save-settings-btn">
+              <i class="fa-solid fa-floppy-disk"></i> Save All Settings
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    requireAdmin().then(user => {
+      if (!user) return;
+      document.getElementById("sidebar-avatar").textContent = (user.name || user.email || "A").charAt(0).toUpperCase();
+      document.getElementById("sidebar-username").textContent = user.name || user.email;
+      loadSettings();
+    });
+
+    async function loadSettings() {
+      try {
+        const s = await api.get("/api/settings");
+        document.getElementById("site-title").value = s.siteTitle || "";
+        document.getElementById("site-desc").value = s.siteDescription || "";
+        document.getElementById("primary-color").value = s.primaryColor || "#8063cc";
+        document.getElementById("primary-color-hex").value = s.primaryColor || "#8063cc";
+        document.getElementById("header-text").value = s.headerText || "";
+        document.getElementById("footer-text").value = s.footerText || "";
+        document.getElementById("guest-checkout").checked = s.guestCheckout !== false;
+        document.getElementById("show-out-of-stock").checked = s.showOutOfStock !== false;
+        document.getElementById("maintenance-mode").checked = !!s.maintenanceMode;
+      } catch {
+        toast.error("Could not load settings.");
+      } finally {
+        document.getElementById("settings-loading").style.display = "none";
+        document.getElementById("settings-content").style.display = "block";
+      }
+    }
+
+    // Sync hex input → colour picker
+    function syncHexToColor() {
+      const hex = document.getElementById("primary-color-hex").value.trim();
+      if (/^#[0-9a-fA-F]{6}$/.test(hex)) {
+        document.getElementById("primary-color").value = hex;
+        document.documentElement.style.setProperty("--primary", hex);
+      }
+    }
+
+    // Sync colour picker → hex input
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("primary-color")?.addEventListener("input", e => {
+        document.getElementById("primary-color-hex").value = e.target.value;
+        document.documentElement.style.setProperty("--primary", e.target.value);
+      });
+    });
+
+    async function saveSettings() {
+      const hexVal = document.getElementById("primary-color-hex").value.trim();
+      if (hexVal && !/^#[0-9a-fA-F]{6}$/.test(hexVal)) {
+        toast.error("Please enter a valid hex colour, e.g. #8063cc");
+        return;
+      }
+      const payload = {
+        siteTitle: document.getElementById("site-title").value.trim(),
+        siteDescription: document.getElementById("site-desc").value.trim(),
+        primaryColor: hexVal || document.getElementById("primary-color").value,
+        headerText: document.getElementById("header-text").value.trim(),
+        footerText: document.getElementById("footer-text").value.trim(),
+        guestCheckout: document.getElementById("guest-checkout").checked,
+        showOutOfStock: document.getElementById("show-out-of-stock").checked,
+        maintenanceMode: document.getElementById("maintenance-mode").checked,
+      };
+      try {
+        await api.post("/api/settings", payload);
+        toast.success("Settings saved successfully!");
+      } catch (err) { toast.error(err.message || "Save failed."); }
+    }
+
+    async function changePassword() {
+      const current = document.getElementById("current-pass").value;
+      const newPass = document.getElementById("new-pass").value;
+      const confirm = document.getElementById("confirm-pass").value;
+      if (!current) { toast.error("Please enter your current password."); return; }
+      if (newPass.length < 8) { toast.error("New password must be at least 8 characters."); return; }
+      if (newPass !== confirm) { toast.error("Passwords do not match."); return; }
+      try {
+        await api.post("/api/auth/change-password", { currentPassword: current, newPassword: newPass });
+        toast.success("Password updated successfully!");
+        document.getElementById("current-pass").value = "";
+        document.getElementById("new-pass").value = "";
+        document.getElementById("confirm-pass").value = "";
+      } catch (err) { toast.error(err.message || "Password change failed."); }
+    }
+  </script>
+  <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+      var saveBtn = document.getElementById("save-settings-btn");
+      if (saveBtn) saveBtn.addEventListener("click", saveSettings);
+
+      var passBtn = document.getElementById("change-pass-btn");
+      if (passBtn) passBtn.addEventListener("click", changePassword);
+    });
+
+
+    registerActions({ "sync-hex": () => syncHexToColor() });
+  </script>
+</body>
+
+</html>
